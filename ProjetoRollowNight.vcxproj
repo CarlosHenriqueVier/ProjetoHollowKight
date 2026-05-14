@@ -135,7 +135,22 @@ shell32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <Image Include="TexturaPersonagem\Personagem1.png" />
+    <Text Include="LICENSE.txt" />
+    <Text Include="Mapas\MapaTeste.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include=".gitattributes" />
+    <None Include=".gitignore" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Funcoes\main.cpp" />
+    <ClCompile Include="Funcoes\movimentaPersonagem\movePersonagem.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Funcoes\movimentaPersonagem\movePersonagem.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Texturas\Personagem\Personagem1.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

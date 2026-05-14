@@ -10,14 +10,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files\Hollow Knight</Filter>
-    </ClCompile>
-    <ClCompile Include="movimentaPersonagem.cpp">
-      <Filter>Source Files\Hollow Knight</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <Image Include="TexturaPersonagem\Personagem1.png" />
   </ItemGroup>
 </Project>
