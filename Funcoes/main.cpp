@@ -1,110 +1,174 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include <stdio.h>
 #include <stdlib.h>
 #include "raylib.h"
 
-void MostraTeste(void);
+// --- Estruturas ---
+struct infoTela {
+    const int largura = 1200;
+    const int altura = 800;
+    char titulo[15] = "Hollow Knight";
+} tela;
 
+struct infoBloco {
+    const float largura = 10;
+    const float altura = 10;
+} bloco;
+
+struct infoMapa {
+    const int colunas = 151; // Largura do TXT
+    const int linhas = 16;   // Altura do TXT
+    char localMapa[20] = "Mapas/MapaTeste.txt";
+    char** matrizMapa;
+} map;
+
+struct infoPersonagem {
+    Vector2 posicao = { 10, 700 };
+    Texture2D imagem;
+} personagem;
+// Protótipos de funções
 Vector2 movimentaPersoangem(Vector2);
 
+char** leituraMapa(struct infoMapa info);
 
+void liberaMapa(char** matriz, int linhas);
 
-struct infoTela
-{
-	const int largura = 1200;//pixel
-	const int altura = 800;//pixel
-	char titulo[14] = { "Hollow Knight" };
-}tela;
+void startJogo(void);
 
-struct infoMapa
-{
+void saveGame(void);
 
-}map;
+void outGame(void);
 
-struct infoPersonagem
-{
-	const int largura = 175;//pixel
-	const int altura = 175;//pixel
-	Vector2 posicao =
-	{
-		10,//x 
-		700,//y -> (tela.altura - personagem.altura)
-	};
-	int quantidadeVida = 4;
-	int vida = 100;
-	int energia = 0;
-	Texture2D imagem;
-}personagem;
+char menu(void);
 
-int main(void)
-{
-	InitWindow(tela.largura, tela.altura, tela.titulo);
+// Criamos uma variável para controlar onde o jogador está
+enum Estado { ESTADO_MENU, ESTADO_JOGANDO };
+Estado estadoAtual = ESTADO_MENU;
 
-	MostraTeste();
-	CloseWindow();
-	
-	return 0;
+int main(void) {
+    InitWindow(tela.largura, tela.altura, tela.titulo);
+    map.matrizMapa = leituraMapa(map);
+    personagem.imagem = LoadTexture("Texturas/Personagem/Personagem1.png");
+    SetTargetFPS(60);
+
+    while (!WindowShouldClose()) {
+
+        if (estadoAtual == ESTADO_MENU) {
+            // No menu, apenas verificamos se ele quer começar
+            if (IsKeyPressed(KEY_C)) {
+                estadoAtual = ESTADO_JOGANDO;
+            }
+
+            BeginDrawing();
+            ClearBackground(BLACK);
+            DrawText("HOLLOW KNIGHT - MENU", 400, 300, 30, WHITE);
+            DrawText("Pressione 'C' para iniciar", 450, 400, 20, WHITE);
+            EndDrawing();
+        }
+        else if (estadoAtual == ESTADO_JOGANDO) {
+            // Se estiver jogando, chama a função de lógica/desenho
+            startJogo();
+
+            // Se apertar ESC, volta para o menu
+            if (IsKeyPressed(KEY_ESCAPE)) {
+                estadoAtual = ESTADO_MENU;
+            }
+        }
+    }
+
+    UnloadTexture(personagem.imagem);
+    liberaMapa(map.matrizMapa, map.linhas);
+    CloseWindow();
+    return 0;
 }
+
+//Funções:
+
+char** leituraMapa(struct infoMapa info) {
+    FILE* abreMapa = fopen(info.localMapa, "r");
+    if (abreMapa == NULL) return NULL;
+
+    // Aloca as linhas
+    char** matriz = (char**)malloc(info.linhas * sizeof(char*));
+    for (int i = 0; i < info.linhas; i++) {
+        // Aloca colunas (+2 para garantir espaço do \n e \0)
+        matriz[i] = (char*)malloc((info.colunas + 2) * sizeof(char));
+        if (fgets(matriz[i], info.colunas + 2, abreMapa) == NULL) {
+            matriz[i][0] = '\0';
+        }
+    }
+
+    fclose(abreMapa);
+    return matriz;
+}
+
+void liberaMapa(char** matriz, int linhas) {
+    if (matriz == NULL) return;
+    for (int i = 0; i < linhas; i++) free(matriz[i]);
+    free(matriz);
+}
+
 Vector2 movimentaPersoangem(Vector2 personagemPosicao) {
-	if (IsKeyPressed(KEY_LEFT) || IsKeyPressedRepeat(KEY_LEFT)) {
-		if(personagemPosicao.x > 5){
-		personagemPosicao.x -= 4.0f;
-		}
-	}
-	if (IsKeyPressed(KEY_RIGHT) || IsKeyPressedRepeat(KEY_RIGHT)) {
-		if (personagemPosicao.x < 1030) {
-			personagemPosicao.x += 7.0f;
-		}
-	}
-	if (IsKeyPressed(KEY_UP) || IsKeyPressedRepeat(KEY_UP)) {
-		if (personagemPosicao.y > 100){
-		personagemPosicao.y -= 7.0f;
-		}
-	}
-	if (IsKeyPressed(KEY_DOWN) || IsKeyPressedRepeat(KEY_DOWN)) {
-		if(personagemPosicao.y < 700)
-		personagemPosicao.y += 7.0f;
-	}
-	return personagemPosicao;
+    float velocidade = 5.0f;//quanto o perosnagem andará
+    if (IsKeyDown(KEY_LEFT) && personagemPosicao.x > 0) {
+        personagemPosicao.x -= velocidade;
+    }
+    if (IsKeyDown(KEY_RIGHT) && personagemPosicao.x < 1100) {
+        personagemPosicao.x += velocidade;
+    }
+    if (IsKeyDown(KEY_UP) && personagemPosicao.y > 0) {
+        personagemPosicao.y -= velocidade;
+    }
+    if (IsKeyDown(KEY_DOWN) && personagemPosicao.y < 700) {
+        personagemPosicao.y += velocidade;
+    }
+    return personagemPosicao;
 }
 
-void MostraTeste(void) {
+void startJogo(void) {
+        // Atualização
+        personagem.posicao = movimentaPersoangem(personagem.posicao);
 
-	personagem.imagem = LoadTexture("Texturas/Personagem/Personagem1.png");
+        // Desenho
+        BeginDrawing();
+        ClearBackground(BLACK);
 
-	SetTargetFPS(60);
+        // 2. Lógica para desenhar o mapa
+        if (map.matrizMapa != NULL) {
+            for (int i = 0; i < map.linhas; i++) {
+                for (int j = 0; j < map.colunas; j++) {
+                    // Verifica se o caractere não é espaço ou quebra de linha
+                    char caractere = map.matrizMapa[i][j];
+                    if (caractere != ' ' && caractere != '\n' && caractere != '\0' && caractere != '\r') {
 
-	while (!WindowShouldClose()) {
+                        // Calcula a posição do bloco baseado no índice da matriz
+                        float posX = j * bloco.largura;
+                        float posY = i * bloco.altura;
 
-		personagem.posicao = movimentaPersoangem(personagem.posicao);
+                        DrawRectangle(posX, posY, bloco.largura - 1, bloco.altura - 1, GREEN);
 
-		BeginDrawing();
-
-		ClearBackground(BLACK);
-
-		DrawRectangle(10, 10, 100, 20, RED);
-		DrawRectangle(10, 30, 100, 20, BLUE);
-
-		DrawTextureEx(
-			personagem.imagem,
-			personagem.posicao,
-			0.0f,
-			0.5f,
-			WHITE
-		);
-		EndDrawing();
-	}
-	UnloadTexture(personagem.imagem);
+                    }
+                }
+            }
+        }
+        DrawTextureV(personagem.imagem, personagem.posicao, WHITE);
+        EndDrawing();
 }
-/*
-void leituraMapa(void) {
-	FILE* abreMapa;
-	abreMapa = fopen("Mapas\MapaTeste.txt", "r");
-	if (abreMapa == NULL) {
-		if (abreMapa == NULL) {
-			printf("Erro ao abrir o mapa.\n");
-		}
-	}
-	printf("");
-	fclose(abreMapa);
+
+char menu(void) {
+    // Por enquanto, apenas detecta se o jogador apertou 'C'
+    if (IsKeyPressed(KEY_C)) return 'c';
+    if (IsKeyPressed(KEY_S)) return 's';
+    if (IsKeyPressed(KEY_O)) return 'o';
+
+    return ' '; // Retorna vazio se nenhuma tecla do menu foi pressionada
 }
-*/
+void saveGame(void) {
+    // Lógica de salvar futuramente
+}
+
+void outGame(void) {
+    // Lógica de sair
+    CloseWindow();
+    exit(0);
+}
