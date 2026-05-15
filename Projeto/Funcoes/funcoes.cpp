@@ -60,13 +60,18 @@ Vector2 movimentaPersoangem(Vector2 posicaoAtual) {
     return posicaoAtual;
 }
 
-
-
 void startJogo(void) {
     // Atualização
     // Desenho
     BeginDrawing();
+        
     ClearBackground(BLACK);
+
+    desenhaMapa();
+
+    EndDrawing();
+}
+void desenhaMapa(void) {
 
     // 2. Lógica para desenhar o mapa
     //Legenda rapida: 
@@ -80,12 +85,12 @@ void startJogo(void) {
             for (int j = 0; j < map.colunas; j++) {
                 // Verifica se o caractere não é espaço ou quebra de linha
                 char caractere = map.matrizMapa[i][j];
-                
+
                 if (caractere != ' ' && caractere != '\n' && caractere != '\0' && caractere != '\r') {
                     float posX = j * bloco.largura;
                     float posY = i * bloco.altura;
                     if (caractere == 'J') {
-                        DrawTextureEx(personagem.imagem, personagem.posicao, 0, 0.3, WHITE);
+                        DrawTextureEx(personagem.imagem[0], personagem.posicao, 0, 0.3, WHITE);
                         personagem.posicao = movimentaPersoangem(personagem.posicao);
                     }
                     else if (caractere == 'C') {
@@ -105,6 +110,43 @@ void startJogo(void) {
             }
         }
     }
-    EndDrawing();
+
 }
 
+enum Estado { ESTADO_MENU, ESTADO_JOGANDO };
+
+Estado estadoAtual = ESTADO_MENU;
+
+void loadArquivos(void) {
+    map.matrizMapa = leituraMapa(map);
+    personagem.imagem[0] = LoadTexture("Texturas/Personagem/Personagem1.png");
+    tela.menuImagem[0] = LoadTexture("Texturas/Fundos/Menu/FundoMenu.png");;
+}
+
+void unloadArquivos(void) {
+    UnloadTexture(personagem.imagem[0]);
+    liberaMapa(map.matrizMapa, map.linhas);
+    CloseWindow();
+}
+
+void desenhaMenu(void) {
+    if (estadoAtual == ESTADO_MENU) {
+        if (IsKeyPressed(KEY_C)) {
+            estadoAtual = ESTADO_JOGANDO;
+        }
+
+        BeginDrawing();
+        ClearBackground(BLACK);
+        DrawTextureEx(tela.menuImagem[0],{0,0},0,1, WHITE);
+        EndDrawing();
+    }
+    else if (estadoAtual == ESTADO_JOGANDO) {
+        // Se estiver jogando, chama a função de lógica/desenho
+        startJogo();
+
+        // Se apertar ESC, volta para o menu
+        if (IsKeyPressed(KEY_M)) {
+            estadoAtual = ESTADO_MENU;
+        }
+    }
+}

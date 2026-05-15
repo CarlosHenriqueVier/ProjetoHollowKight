@@ -8,12 +8,14 @@ typedef struct {
     int largura;
     int altura;
     char titulo[20];
+    enum Estado { ESTADO_MENU, ESTADO_JOGANDO };
+    Texture2D menuImagem[3];
 } infoTela;
 
 typedef struct {
     Vector2 posicao;
     Vector2 posicaoInicial;
-    Texture2D imagem;
+    Texture2D imagem[3];
     bool colidindo;
 } infoPersonagem;
 
@@ -22,6 +24,7 @@ typedef struct {
     int linhas;
     char localMapa[30];
     char** matrizMapa;
+    Texture2D mapaImagem[3];
 } infoMapa;
 
 typedef struct {

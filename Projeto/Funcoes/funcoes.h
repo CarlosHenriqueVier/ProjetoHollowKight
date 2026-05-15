@@ -11,10 +11,11 @@ void liberaMapa(char** matriz, int linhas);
 
 void startJogo(void);
 
-void saveGame(void);
+void desenhaMenu(void);
 
-void outGame(void);
+void desenhaMapa(void);
 
-char menu(void);
+void loadArquivos(void);
 
+void unloadArquivos(void);
 #endif
