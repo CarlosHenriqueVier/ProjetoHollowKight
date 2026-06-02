@@ -17,7 +17,6 @@ void outGame(void) {
 char** leituraMapa(infoMapa info) {
     FILE* abreMapa = fopen(info.localMapa, "r");
     if (abreMapa == NULL) return NULL;
-
     // Aloca as linhas
     char** matriz = (char**)malloc(info.linhas * sizeof(char*));
     for (int i = 0; i < info.linhas; i++) {
@@ -27,7 +26,6 @@ char** leituraMapa(infoMapa info) {
             matriz[i][0] = '\0';
         }
     }
-
     fclose(abreMapa);
     return matriz;
 }
@@ -46,6 +44,15 @@ void liberaMapa(char** matriz, int linhas) {
 void updateJogo(void) {
     // Só lógica, zero desenho
     personagem.posicao = movimentaPersonagem(personagem.posicao);
+
+    tela.camera.target = { 
+        personagem.posicao.x + personagem.largura / 2.0f, 
+        personagem.posicao.y + personagem.altura / 2.0f
+    }; // Faz a camera seguir o personagem
+    tela.camera.offset = {
+        tela.largura / 2.0f, 
+        tela.altura / 2.0f 
+    }; // Centraliza a camera
 }
 void desenhaPersonagem(void) {
     DrawTextureEx(personagem.imagem[0], personagem.posicao, 0, 0.3f, WHITE);
@@ -64,15 +71,15 @@ void desenhaMapa(void) {
             else if (c == 'C') DrawRectangle(posX, posY, bloco.largura - 1, bloco.altura - 1, PURPLE);
             else if (c == 'A') DrawRectangle(posX, posY, bloco.largura - 1, bloco.altura - 1, YELLOW);
             else if (c == 'H') DrawRectangle(posX, posY, bloco.largura - 1, bloco.altura - 1, BLUE);
-            // ❌ Sem 'J' aqui, personagem é desenhado separado
         }
     }
 }
 
 void drawJogo(void) {
-    ClearBackground(BLACK);
-    desenhaMapa();      // só desenha blocos
-    desenhaPersonagem(); // só desenha o personagem
+    BeginMode2D(tela.camera);
+        desenhaMapa();      // só desenha blocos
+        desenhaPersonagem(); // só desenha o personagem
+    EndMode2D();
 }
 
 void loadArquivos(void) {

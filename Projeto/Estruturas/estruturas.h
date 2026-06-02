@@ -9,6 +9,7 @@ typedef struct {
     int altura;
     char titulo[20];
     Texture2D menuImagem[3];
+    Camera2D camera;
 } infoTela;
 
 typedef struct {

@@ -1,10 +1,31 @@
 #include "estruturas.h"
 
-// Aqui você cria e inicializa as variáveis de verdade
-infoTela tela = { 1500, 800, "Hollow Knight",{ 0 }};
+// Aqui cria e inicializa as variáveis de verdade
 
-infoPersonagem personagem = { { 50, 130 }, { 0, 0 }, { 0 }, false, {5.0f} }; // {0} limpa a struct da textura
+infoTela tela = { 
+    1500, 
+    800, 
+    "Hollow Knight",
+    { 0 },
+    { {0,0}, {0,0}, 0.0f, 1.0f } 
+};
 
-infoMapa map = { 151, 16, "Mapas/MapaTeste.txt", nullptr };
+infoPersonagem personagem = {
+     { 50, 130 }, 
+     { 0, 0 }, 
+     { 0 }, 
+     false, 
+     {5.0f} 
+}; // {0} limpa a struct da textura
 
-infoBloco bloco = { 30.0f, 30.0f };
+infoMapa map = { 
+    151, 
+    16, 
+    "Mapas/MapaTeste.txt", 
+    nullptr 
+};
+
+infoBloco bloco = { 
+    30.0f, 
+    30.0f 
+};
