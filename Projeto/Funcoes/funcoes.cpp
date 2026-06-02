@@ -7,7 +7,6 @@
 void saveGame(void) {
     // Lógica de salvar futuramente
 }
-
 void outGame(void) {
     // Lógica de sair
     CloseWindow();
@@ -129,7 +128,7 @@ void desenhaMenu(void) {
 }
 
 Vector2 movimentaPersonagem(Vector2 posicaoAtual) {
-    float velocidade = 5.0f;
+    float velocidade = 4.0f;
     static float velocidadey = 0; // static para lembrar o valor e nao reniciar toda vez
     velocidadey += 0.5f; // Gravidade
     posicaoAtual.y += velocidadey;
