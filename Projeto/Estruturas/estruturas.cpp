@@ -22,7 +22,7 @@ infoMapa map = {
     151, 
     16, 
     "Mapas/MapaTeste.txt", 
-    nullptr 
+    nullptr
 };
 
 infoBloco bloco = { 
