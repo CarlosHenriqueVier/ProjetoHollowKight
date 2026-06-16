@@ -2,8 +2,7 @@
 #define FUNCOES_H
 
 #include "../Estruturas/estruturas.h"
-
-Vector2 movimentaPersonagem(Vector2);
+#include "../Personagem/personagem.h"
 
 char** leituraMapa(infoMapa info);
 

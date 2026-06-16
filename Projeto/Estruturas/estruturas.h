@@ -1,6 +1,5 @@
 #ifndef ESTRUTURAS_H
 #define ESTRUTURAS_H
-
 #include <raylib.h>
 
 // 1. Definição do TIPO (Apenas o molde)
@@ -20,7 +19,6 @@ typedef struct {
     float velocidade;
     int largura;
     int altura;
-    enum DIRECAO {DIREITA,ESQUERDA};
 } infoPersonagem;
 
 typedef struct {

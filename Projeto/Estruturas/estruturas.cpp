@@ -11,13 +11,14 @@ infoTela tela = {
 };
 
 infoPersonagem personagem = {
-     { 50, 130 }, 
-     { 0, 0 }, 
-     { 0 }, 
-     false, 
-     {5.0f} 
-}; // {0} limpa a struct da textura
-
+    { 50, 130 },  // posicao
+    { 50, 130 },  // posicaoInicial
+    { 0 },        // imagem
+    false,        // colidindo
+    5.0f,         // velocidade
+    20,           // largura
+    40            // altura
+};
 infoMapa map = { 
     151, 
     16, 

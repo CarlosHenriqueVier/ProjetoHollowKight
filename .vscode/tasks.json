@@ -6,26 +6,20 @@
             "label": "Compilar e Rodar Raylib",
             "command": "g++",
             "args": [
-                "./Projeto/main.cpp",
-                "./Projeto/Estruturas/estruturas.cpp",
-                "./Projeto/Funcoes/funcoes.cpp",
+                "${workspaceFolder}/Projeto/main.cpp",
+                "${workspaceFolder}/Projeto/Estruturas/estruturas.cpp",
+                "${workspaceFolder}/Projeto/Mapa/mapa.cpp",
+                "${workspaceFolder}/Projeto/Personagem/personagem.cpp",
+                "${workspaceFolder}/Projeto/Game/game.cpp",
+                "${workspaceFolder}/Projeto/Menu/menu.cpp",
                 "-o",
-                "./Projeto/programa.exe",
+                "${workspaceFolder}/Projeto/programa.exe",
                 "-I${workspaceFolder}/Projeto/raylib/include",
                 "-L${workspaceFolder}/Projeto/raylib/lib",
-                "${workspaceFolder}/Projeto/raylib/lib/raylib.dll",
+                "-lraylib",
                 "-lopengl32",
                 "-lgdi32",
-                "-lwinmm",
-                ";",
-                "Copy-Item",
-                "-Path",
-                ".\\Projeto\\raylib\\lib\\raylib.dll",
-                "-Destination",
-                ".\\Projeto\\",
-                "-Force",
-                ";",
-                ".\\Projeto\\programa.exe"
+                "-lwinmm"
             ],
             "group": {
                 "kind": "build",
@@ -39,7 +33,13 @@
                 "showReuseMessage": false,
                 "clear": true
             },
-            "problemMatcher": ["$gcc"]
+            "problemMatcher": ["$gcc"],
+            "options": {
+                "shell": {
+                    "executable": "cmd.exe",
+                    "args": ["/C"]
+                }
+            }
         }
     ]
 }

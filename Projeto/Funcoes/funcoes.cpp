@@ -127,39 +127,3 @@ void desenhaMenu(void) {
     EndDrawing();
 }
 
-Vector2 movimentaPersonagem(Vector2 posicaoAtual) {
-    float velocidade = 4.0f;
-    static float velocidadey = 0; // static para lembrar o valor e nao reniciar toda vez
-    velocidadey += 0.5f; // Gravidade
-    posicaoAtual.y += velocidadey;
-
-    int coluna = (int)((posicaoAtual.x + personagem.largura / 2) / bloco.largura); // Verifica a parte do meio do personagem
-    int linha = (int)((posicaoAtual.y + 50 + personagem.altura) / bloco.altura); // Verifica a parte de baixo do personagem
-
-    if (map.matrizMapa[linha][coluna] == 'P' && velocidadey >= 0) { // Colisão com o chão
-        // Lógica de colisão com o chão
-        velocidadey = 0; // Para o movimento vertical
-        posicaoAtual.y = (linha * bloco.altura) - personagem.altura - 50; // Ajusta a posição para ficar em cima do bloco - 50 para verificar a parte de baixo do personagem
-    }
-    int linhameio = (int)((posicaoAtual.y + 20 + personagem.altura / 2) / bloco.altura); // Verifica a parte do meio do personagem
-    int colunadireita = (int)((posicaoAtual.x + personagem.largura) / bloco.largura);
-    if ((IsKeyDown(KEY_D)|| IsKeyDown(KEY_RIGHT)) && posicaoAtual.x > 0) {
-        if (map.matrizMapa[linhameio][colunadireita] != 'P') {
-            // Lógica de colisão com paredes
-            posicaoAtual.x += velocidade; // Move para a direitad
-        }
-    }
-
-    int colunaesquerda = (int)(posicaoAtual.x / bloco.largura);
-    if ((IsKeyDown(KEY_A)|| IsKeyDown(KEY_LEFT)) && posicaoAtual.x < 1500) {
-        if (map.matrizMapa[linhameio][colunaesquerda] != 'P') {
-            posicaoAtual.x -= velocidade; // Move para a esquerda
-        }
-    }
-
-    if ((IsKeyPressed(KEY_W)|| IsKeyPressed(KEY_UP)) && map.matrizMapa[linha][coluna] == 'P') {
-        velocidadey = -10.0f; // Pulo
-    }
-
-    return posicaoAtual;
-}
