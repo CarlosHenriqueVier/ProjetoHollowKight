@@ -37,20 +37,25 @@ void updateJogo() {
     if (tela.camera.target.y < margemV)               tela.camera.target.y = margemV;
     if (tela.camera.target.y > mapaAltura  - margemV) tela.camera.target.y = mapaAltura  - margemV;
 }
-
 void drawFundo() {
-    // Fora do BeginMode2D — desenha direto na tela
-    Rectangle source = { 0, 0, (float)tela.fundoJogo.width, (float)tela.fundoJogo.height };
-    Rectangle dest   = { 0, 0, (float)tela.largura, (float)tela.altura };
-    DrawTexturePro(tela.fundoJogo, source, dest, { 0, 0 }, 0.0f, WHITE);
+    float fw = (float)tela.fundoJogo.width;
+    float fh = (float)tela.fundoJogo.height;
+    float mapaLargura = map.colunas * bloco.largura;
+    float mapaAltura  = map.linhas  * bloco.altura;
+
+    // Repete a imagem por todo o mapa
+    for (float x = 0; x < mapaLargura; x += fw) {
+        for (float y = 0; y < mapaAltura; y += fh) {
+            DrawTextureV(tela.fundoJogo, { x, y }, WHITE);
+        }
+    }
 }
 
 void drawJogo() {
     ClearBackground({ 5, 5, 20, 255 });
 
-    drawFundo();              // ← fora da câmera, cobre a tela toda na escala certa
-
-    BeginMode2D(tela.camera);
+    BeginMode2D(tela.camera);  // ← drawFundo agora dentro
+        drawFundo();
         desenhaMapa();
         desenhaPersonagem();
     EndMode2D();

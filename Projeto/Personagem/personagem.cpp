@@ -17,7 +17,7 @@ void updatePersonagem() {
 }
 
 void desenhaPersonagem() {
-    DrawTextureEx(personagem.imagem[0], personagem.posicao, 0, 0.3f, WHITE);
+    DrawTextureEx(personagem.imagem[0], personagem.posicao, 0, 0.25f, WHITE);
 }
 
 // Retorna true se o bloco na posição (px, py) do mundo é sólido

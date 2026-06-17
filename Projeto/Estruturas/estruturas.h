@@ -2,13 +2,13 @@
 #define ESTRUTURAS_H
 #include <raylib.h>
 
-// 1. Definição do TIPO (Apenas o molde)
 typedef struct {
     int largura;
     int altura;
     char titulo[20];
     Texture2D menuImagem[3];
-    Texture2D fundoJogo;      // ← adiciona
+    Texture2D menuBotoes[4];  // ← texturas dos 4 botoes: Jogar, Carregar, Opcoes, Sair
+    Texture2D fundoJogo;
     Camera2D camera;
 } infoTela;
 
@@ -35,11 +35,8 @@ typedef struct {
     float altura;
 } infoBloco;
 
-
-// 2. Declaração das variáveis como EXTERN
-// Isso diz ao C: "Essas variáveis existem, mas serão criadas em outro lugar"
 extern infoTela tela;
 extern infoPersonagem personagem;
 extern infoMapa map;
 extern infoBloco bloco;
-#endif // !ESTRUTURAS_H
+#endif

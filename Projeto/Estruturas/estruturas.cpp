@@ -6,9 +6,10 @@ infoTela tela = {
     1500, 
     800, 
     "Hollow Knight",
-    { 0 },//zera menu
-    { 0 },//zera fundo
-    { {0,0}, {0,0}, 0.0f, 1.7f }  // ultimo valor é o zoom
+    { 0 },  // menuImagem
+    { 0 },  // menuBotoes  ← adiciona essa linha
+    { 0 },  // fundoJogo
+    { {0,0}, {0,0}, 0.0f, 1.7f }  // camera
 };
 
 infoPersonagem personagem = {
