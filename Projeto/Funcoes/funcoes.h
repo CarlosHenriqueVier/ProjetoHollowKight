@@ -2,8 +2,7 @@
 #define FUNCOES_H
 
 #include "../Estruturas/estruturas.h"
-
-Vector2 movimentaPersoangem(Vector2);
+#include "../Personagem/personagem.h"
 
 char** leituraMapa(infoMapa info);
 
@@ -18,4 +17,11 @@ void desenhaMapa(void);
 void loadArquivos(void);
 
 void unloadArquivos(void);
+
+void updateJogo(void);
+
+void drawJogo(void);
+
+void desenhaPersonagem(void);
+
 #endif

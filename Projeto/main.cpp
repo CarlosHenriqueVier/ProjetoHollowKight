@@ -1,20 +1,22 @@
 #define _CRT_SECURE_NO_WARNINGS
-#include <stdio.h>
-#include <stdlib.h>
 #include <raylib.h>
 #include "Estruturas/estruturas.h"
-#include "Funcoes/funcoes.h"
-
-// Criamos uma variavel para controlar onde o jogador est�
+#include "Menu/menu.h"
+#include "Game/game.h"
 
 int main(void) {
     InitWindow(tela.largura, tela.altura, tela.titulo);
     SetTargetFPS(60);
 
-    loadArquivos();
+    loadJogo();
+    loadMenu();
+
     while (!WindowShouldClose()) {
         desenhaMenu();
     }
-    unloadArquivos();
+
+    unloadJogo();
+    unloadMenu();
+    CloseWindow();
     return 0;
 }
