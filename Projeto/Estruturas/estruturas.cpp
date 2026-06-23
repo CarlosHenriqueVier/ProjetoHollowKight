@@ -6,7 +6,7 @@ infoTela tela = {
     1500, 
     800, 
     "Hollow Knight",
-    { {0,0}, {0,0}, 0.0f, 2.0f }  // camera
+    { {0,0}, {0,0}, 0.0f, 0.25f }  // camera
 };
 
 infoEntidade personagem = {
@@ -24,10 +24,11 @@ infoEntidade personagem = {
 infoEntidade listaInimigos[MAX_INIMIGOS] = { 0 };
 int quantidadeInimigos = 0;
 
+// Substitua a inicialização antiga por essa:
 infoMapa map = { 
-    151, 
-    16, 
-    {"Mapa/Mapas/mapaInicial.txt"},
+    16,           // Linhas (ajustado para bater com a matriz dos txts)
+    151,          // Colunas
+    "Mapa/Mapas/mapaVila.txt", 
     nullptr
 };
 
@@ -61,8 +62,8 @@ infoMenu menuConfiguracoes = {
 };
 
 constantes constantesJogo = {
-    3.0f,   // velocidade
+    8.0f,   // velocidade
     0.5f,   // gravidade
-    -10.0f,  // forcaPulo
+    -20.0f,  // forcaPulo
     0.0f    // velocidadeY padrão
 };

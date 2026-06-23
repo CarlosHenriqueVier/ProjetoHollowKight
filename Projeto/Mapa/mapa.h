@@ -8,7 +8,6 @@ void liberaMapa(char** matriz, int linhas);
 void loadMapa();
 void unloadMapa();
 void desenhaMapa();
-void preencheBordas();
 bool blocoSolido(float px, float py);
 
 #endif

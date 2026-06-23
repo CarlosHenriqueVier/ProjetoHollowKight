@@ -4,12 +4,17 @@
 #include "../Inimigo/inimigo.h"
 #include <raylib.h>
 #include "../Hud/hud.h"
+#include "../Boss/boss.h"
 #include <stdio.h>
+#include <string.h>
+
+// Definição da variável global de controle de fase
+FaseAtual faseDoJogo = FASE_VILA;
 
 void inicializaPosicoesEntidades() {
     if (map.matrizMapa == NULL) return;
 
-    quantidadeInimigos = 0; // Reseta o contador ao carregar o jogo
+    quantidadeInimigos = 0; // Reseta o contador ao carregar o cenário
 
     for (int i = 0; i < map.linhas; i++) {
         for (int j = 0; j < map.colunas; j++) {
@@ -23,28 +28,39 @@ void inicializaPosicoesEntidades() {
             }
             else if (c == 'M') {
                 if (quantidadeInimigos < MAX_INIMIGOS) {
-                    // Configura os dados base deste inimigo específico dentro do array
                     listaInimigos[quantidadeInimigos].posicao = { posX, posY };
                     listaInimigos[quantidadeInimigos].posicaoInicial = { posX, posY };
                     listaInimigos[quantidadeInimigos].largura = 30;
                     listaInimigos[quantidadeInimigos].altura = 30;
                     listaInimigos[quantidadeInimigos].olhandoDireita = true;
                     listaInimigos[quantidadeInimigos].dados.hp = 100;
-                    listaInimigos[quantidadeInimigos].dados.mp = 0; // Usado para velocidade vertical
+                    listaInimigos[quantidadeInimigos].dados.mp = 0; 
                     listaInimigos[quantidadeInimigos].dados.vivo = true;
 
                     quantidadeInimigos++;
                 }
             }
+            else if (c == 'C') {
+                chefao.posicao = { posX, posY };
+                chefao.posicaoInicial = { posX, posY };
+                chefao.largura = 60; 
+                chefao.altura = 60;
+                chefao.dados.hp = 500;
+                chefao.dados.vivo = true;
+                bossAtivo = true; 
+                TraceLog(LOG_INFO, "Boss 'C' carregado na posicao: %.2f, %.2f", posX, posY);
+            }
         }
     }
+    
     TraceLog(LOG_INFO, "Total de inimigos carregados com sucesso: %d", quantidadeInimigos);
 }
 
 void loadJogo() {
-    loadMapa();
-    inicializaPosicoesEntidades(); // Varre o mapa e posiciona Player e os Inimigos
+    loadMapa(); // Chama a função que agora está no seu arquivo de mapa para medir e carregar o txt
+    inicializaPosicoesEntidades(); 
     loadInimigo();
+    loadBoss(); 
     tela.fundoJogo = LoadTexture("Texturas/Fundos/Jogo/FundoJogo.png");
 }
 
@@ -52,30 +68,65 @@ void unloadJogo() {
     unloadMapa();
     unloadPersonagem();
     unloadInimigo();
+    unloadBoss();
     UnloadTexture(tela.fundoJogo); 
+}
+
+void gerenciarTransicaoFases() {
+    // Como map.colunas agora é medido dinamicamente no mapa.c, esta largura estará sempre correta
+    float mapaLargura = map.colunas * bloco.largura;
+    bool mudouDeFase = false;
+
+    // --- AVANÇAR DE FASE (Apenas Borda Direita) ---
+    if ((personagem.posicao.x + personagem.largura) >= (mapaLargura - 45.0f)) {
+        if (faseDoJogo == FASE_VILA) {
+            faseDoJogo = FASE_INICIAL;
+            map.localMapa = "Mapa/Mapas/mapaInicial.txt";
+            mudouDeFase = true;
+        } 
+        else if (faseDoJogo == FASE_INICIAL) {
+            faseDoJogo = FASE_FINAL;
+            map.localMapa = "Mapa/Mapas/mapaFinal.txt";
+            mudouDeFase = true;
+        }
+    }
+
+    // Se houve mudança de cenário, reinicializa o ambiente
+    if (mudouDeFase) {
+        TraceLog(LOG_INFO, ">>> TROCA DE FASE! Carregando novo mapa: %s", map.localMapa);
+
+        unloadMapa(); // Desaloca a matriz do mapa antigo
+        
+        // Limpa estados antigos das entidades para evitar bugs visuais
+        quantidadeInimigos = 0;
+        bossAtivo = false;
+        chefao.dados.vivo = false;
+
+        loadMapa(); // Abre o novo .txt e calcula linhas/colunas automaticamente
+        
+        // Esta função vai ler o novo arquivo, achar onde está o caractere 'J' 
+        // e colocar as coordenadas do personagem exatamente em cima dele!
+        inicializaPosicoesEntidades(); 
+    }
 }
 
 void updateJogo() {
     updatePersonagem();
     updateInimigo();
+    updateBoss();
 
-    // Cria o retângulo do corpo do personagem
     Rectangle rectPlayer = { personagem.posicao.x, personagem.posicao.y, (float)personagem.largura, (float)personagem.altura };
 
     // --- LÓGICA DE ATAQUE DO PERSONAGEM (CAUSAR DANO) ---
     Rectangle rectAtaque = { 0 };
     if (personagem.dados.ataque) {
-        float alcanceAtaque = 40.0f; // Distância do golpe em pixels
+        float alcanceAtaque = 40.0f; 
         
-        // Se olhar para a direita, a área de ataque fica à frente. Se olhar para a esquerda, fica atrás.
         if (personagem.olhandoDireita) {
             rectAtaque = { personagem.posicao.x + personagem.largura, personagem.posicao.y, alcanceAtaque, (float)personagem.altura };
         } else {
             rectAtaque = { personagem.posicao.x - alcanceAtaque, personagem.posicao.y, alcanceAtaque, (float)personagem.altura };
         }
-        
-        // Opcional: Se quiser ver a área do golpe na tela para testar, descomente a linha abaixo (dentro do drawJogo)
-        // DrawRectangleRec(rectAtaque, FADE(PURPLE, 0.5f));
     }
 
     // --- LOOP DE INTERAÇÃO COM TODOS OS INIMIGOS ---
@@ -83,37 +134,28 @@ void updateJogo() {
         if (listaInimigos[i].dados.vivo) {
             Rectangle rectInimigo = { listaInimigos[i].posicao.x, listaInimigos[i].posicao.y, (float)listaInimigos[i].largura, (float)listaInimigos[i].altura };
 
-            // 1. CHECA SE O PERSONAGEM BATEU NO INIMIGO
             if (personagem.dados.ataque && CheckCollisionRecs(rectAtaque, rectInimigo)) {
-                // Inimigo perde 50% de vida (Dano = 50)
                 listaInimigos[i].dados.hp -= 50;
-                
-                // Força o fim do ataque do jogador para não dar dano contínuo no mesmo golpe
                 personagem.dados.ataque = false; 
 
-                // Se o HP do inimigo chegar a 0%, ele morre
                 if (listaInimigos[i].dados.hp <= 0) {
                     listaInimigos[i].dados.hp = 0;
-                    listaInimigos[i].dados.vivo = false; // Inimigo some e desativa
+                    listaInimigos[i].dados.vivo = false; 
                 }
                 
-                // Faz o inimigo dar um mini "coice" para trás ao ser golpeado
                 float direcaoInimigoEmpurrado = (personagem.posicao.x < listaInimigos[i].posicao.x) ? 1.0f : -1.0f;
                 listaInimigos[i].posicao.x += direcaoInimigoEmpurrado * 15.0f;
                 
-                break; // Sai do loop para processar uma colisão por frame
+                break; 
             }
 
-            // 2. CHECA SE O INIMIGO BATEU NO PERSONAGEM (DANO NO JOGADOR)
-            // Só toma dano se o jogador NÃO estiver atacando naquele frame
             if (!personagem.dados.ataque && CheckCollisionRecs(rectPlayer, rectInimigo)) {
-                personagem.dados.hp -= 10; // 10% de dano
+                personagem.dados.hp -= 10; 
                 if (personagem.dados.hp <= 0) {
                     personagem.dados.hp = 0;
                     personagem.dados.vivo = false; 
                 }
 
-                // Knockback no jogador
                 float direcaoKnockback = (personagem.posicao.x < listaInimigos[i].posicao.x) ? -1.0f : 1.0f;
                 personagem.posicao.x += direcaoKnockback * 20.0f; 
                 constantesJogo.velocidadeY = -6.0f; 
@@ -123,7 +165,7 @@ void updateJogo() {
         }
     }
 
-    // --- ATUALIZAÇÃO DA CÂMERA (Mantém igual) ---
+    // --- ATUALIZAÇÃO DA CÂMERA ---
     tela.camera.target = {
         personagem.posicao.x + personagem.largura / 2.0f,
         personagem.posicao.y + personagem.altura / 2.0f
@@ -139,6 +181,9 @@ void updateJogo() {
     if (tela.camera.target.x > mapaLargura - margemH) tela.camera.target.x = mapaLargura - margemH;
     if (tela.camera.target.y < margemV)               tela.camera.target.y = margemV;
     if (tela.camera.target.y > mapaAltura  - margemV) tela.camera.target.y = mapaAltura  - margemV;
+
+    // --- GATILHO DE FLUXO DE FASES ---
+    gerenciarTransicaoFases();
 }
 
 void drawFundo() {
@@ -160,7 +205,8 @@ void drawJogo() {
     BeginMode2D(tela.camera);
         desenhaMapa();
         desenhaPersonagem();
-        desenhaInimigo(); // Desenha todos os inimigos da lista
+        desenhaInimigo(); 
+        desenhaBoss(); 
     EndMode2D();
     
     desenhaHud(); 

@@ -2,9 +2,18 @@
 #define ESTRUTURAS_H
 #include <raylib.h>
 
-#define MAX_INIMIGOS 50 // Limite máximo de inimigos que o mapa pode ter
+#define MAX_INIMIGOS 10 // Limite máximo de inimigos que o mapa pode ter
 
 enum Estado { ESTADO_MENU, ESTADO_JOGANDO, ESTADO_PAUSADO, ESTADO_CONFIGURACOES };
+
+typedef enum {
+    FASE_VILA = 0,
+    FASE_INICIAL,
+    FASE_FINAL
+} FaseAtual;
+
+// Certifique-se de que na sua struct infoMapa, o localMapa seja assim:
+// const char* localMapa;
 
 typedef struct {
     int largura;
@@ -50,11 +59,10 @@ typedef struct {
 } infoEntidade;
 
 typedef struct {
-    int colunas;
     int linhas;
-    char localMapa[30];
+    int colunas;
+    const char* localMapa; // <-- Deixe como const char* em vez de char[]
     char** matrizMapa;
-    Texture2D mapaImagem[3];
 } infoMapa;
 
 typedef struct {
@@ -65,10 +73,9 @@ typedef struct {
 extern infoTela tela;
 extern infoEntidade personagem;
 
-// MODIFICADO: Agora usamos um array para suportar vários inimigos ao mesmo tempo
 extern infoEntidade listaInimigos[MAX_INIMIGOS];
 extern int quantidadeInimigos;
-
+extern FaseAtual faseDoJogo;
 extern dadosEntidade dadosPersonagem;
 extern infoMapa map;
 extern infoBloco bloco;

@@ -49,10 +49,7 @@ Vector2 movimentaInimigoEspecifico(int indice, Vector2 posicaoAtual) {
     }
 
     // Retorna a nova posição corrigida para o elemento do array
-    Vector2 novaPosicao;
-    novaPosicao.x = x;
-    novaPosicao.y = y;
-    return novaPosicao;
+    return {x, y};
 }
 
 void updateInimigo() {

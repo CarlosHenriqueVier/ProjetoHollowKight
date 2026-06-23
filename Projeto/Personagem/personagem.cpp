@@ -112,10 +112,5 @@ Vector2 movimentaPersonagem(Vector2 posicaoAtual) {
     if ((IsKeyPressed(KEY_W) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_SPACE)) && noChao) {
         constantesJogo.velocidadeY = constantesJogo.forcaPulo;
     }
-
-    // Retorno explícito compatível com compiladores C++
-    Vector2 novaPosicao;
-    novaPosicao.x = x;
-    novaPosicao.y = y;
-    return novaPosicao;
+    return {x, y};
 }
