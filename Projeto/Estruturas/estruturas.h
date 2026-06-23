@@ -2,6 +2,7 @@
 #define ESTRUTURAS_H
 #include <raylib.h>
 
+#define MAX_INIMIGOS 50 // Limite máximo de inimigos que o mapa pode ter
 
 enum Estado { ESTADO_MENU, ESTADO_JOGANDO, ESTADO_PAUSADO, ESTADO_CONFIGURACOES };
 
@@ -14,14 +15,21 @@ typedef struct {
 } infoTela;
 
 typedef struct {
+    float velocidade;
+    float gravidade;
+    float forcaPulo;
+    float velocidadeY;
+} constantes;
+
+typedef struct {
     int totalOpcoes;
     int opcaoSelecionada;
     int botoesY[4];
     int botaoW;
     int botaoH;
     Texture2D menuImagem[10];
-    Texture2D menuBotoes[10];  // ← texturas dos 4 botoes: Jogar, Carregar, Opcoes, Sair    
-}infoMenu;
+    Texture2D menuBotoes[10];   
+} infoMenu;
 
 typedef struct {
     int hp;
@@ -35,7 +43,6 @@ typedef struct {
     Vector2 posicaoInicial;
     Texture2D imagem[3];
     bool colidindo;
-    float velocidade;
     int largura;
     int altura;
     bool olhandoDireita;
@@ -57,12 +64,17 @@ typedef struct {
 
 extern infoTela tela;
 extern infoEntidade personagem;
-extern infoEntidade inimigo;
+
+// MODIFICADO: Agora usamos um array para suportar vários inimigos ao mesmo tempo
+extern infoEntidade listaInimigos[MAX_INIMIGOS];
+extern int quantidadeInimigos;
+
 extern dadosEntidade dadosPersonagem;
 extern infoMapa map;
 extern infoBloco bloco;
 extern infoMenu menuPrincipal;
 extern infoMenu menuPause;
 extern infoMenu menuConfiguracoes;
+extern constantes constantesJogo;
 
 #endif

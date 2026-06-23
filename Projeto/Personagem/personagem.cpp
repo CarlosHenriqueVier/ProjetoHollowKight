@@ -18,40 +18,21 @@ void updatePersonagem() {
 
     personagem.posicao = movimentaPersonagem(personagem.posicao);
 }
+
 void desenhaPersonagem() {
     DrawRectangle((int)personagem.posicao.x, (int)personagem.posicao.y, personagem.largura, personagem.altura, GREEN);
 }
 
-// Retorna true se o bloco na posição (px, py) do mundo é sólido
-static bool blocoSolido(float px, float py) {
-    int col = (int)(px / bloco.largura);
-    int lin = (int)(py / bloco.altura);
-
-    // Clamp para não sair da matriz
-    if (col < 0) col = 0;
-    if (col >= map.colunas) col = map.colunas - 1;
-    if (lin < 0) lin = 0;
-    if (lin >= map.linhas)  lin = map.linhas  - 1;
-
-    char c = map.matrizMapa[lin][col];
-    return c == 'P';
-}
-
 Vector2 movimentaPersonagem(Vector2 posicaoAtual) {
-    const float velocidade = 5.0f;
-    const float gravidade  = 0.5f;
-    const float forcaPulo  = -10.0f;
-    static float velocidadeY = 0.0f;
-
     float x = posicaoAtual.x;
     float y = posicaoAtual.y;
     float w = (float)personagem.largura;
     float h = (float)personagem.altura;
 
-    // --- MOVIMENTO HORIZONTAL ---
+    // --- 1. MOVIMENTO HORIZONTAL ---
     float dx = 0;
-    if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) dx =  velocidade;
-    if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT))  dx = -velocidade;
+    if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) dx =  constantesJogo.velocidade;
+    if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT))  dx = -constantesJogo.velocidade;
 
     if (dx != 0) {
         x += dx;
@@ -73,42 +54,47 @@ Vector2 movimentaPersonagem(Vector2 posicaoAtual) {
         }
     }
 
-    // --- GRAVIDADE E MOVIMENTO VERTICAL ---
-    velocidadeY += gravidade;
-    y += velocidadeY;
+    // --- 2. GRAVIDADE E MOVIMENTO VERTICAL ---
+    // CORRIGIDO: Agora usa 'constantesJogo.velocidadeY' em vez de 'personagem.velocidadeY'
+    constantesJogo.velocidadeY += constantesJogo.gravidade;
+    y += constantesJogo.velocidadeY;
 
     // Colisão com o chão (borda inferior esquerda e direita)
-    if (velocidadeY >= 0) {
+    if (constantesJogo.velocidadeY >= 0) {
         bool colideChaoEsq = blocoSolido(x + 2,       y + h);
         bool colideChaoDir = blocoSolido(x + w - 2,   y + h);
 
         if (colideChaoEsq || colideChaoDir) {
             int lin = (int)((y + h) / bloco.altura);
             y = lin * bloco.altura - h - 0.1f;
-            velocidadeY = 0;
+            constantesJogo.velocidadeY = 0; // Para de cair
         }
     }
 
     // Colisão com o teto (borda superior esquerda e direita)
-    if (velocidadeY < 0) {
+    if (constantesJogo.velocidadeY < 0) {
         bool colideTeto1 = blocoSolido(x + 2,     y);
         bool colideTeto2 = blocoSolido(x + w - 2, y);
 
         if (colideTeto1 || colideTeto2) {
             int lin = (int)(y / bloco.altura);
             y = (lin + 1) * bloco.altura + 0.1f;
-            velocidadeY = 0;
+            constantesJogo.velocidadeY = 0; // Zera a velocidade ao bater a cabeça
         }
     }
 
-    // --- PULO (só quando está no chão) ---
+    // --- 3. PULO (só quando está no chão) ---
     bool noChaoEsq = blocoSolido(x + 2,     y + h + 1);
     bool noChaoDir = blocoSolido(x + w - 2, y + h + 1);
     bool noChao    = noChaoEsq || noChaoDir;
 
     if ((IsKeyPressed(KEY_W) || IsKeyPressed(KEY_UP) || IsKeyPressed(KEY_SPACE)) && noChao) {
-        velocidadeY = forcaPulo;
+        constantesJogo.velocidadeY = constantesJogo.forcaPulo;
     }
 
-    return { x, y };
+    // Retorno explícito compatível com compiladores C++
+    Vector2 novaPosicao;
+    novaPosicao.x = x;
+    novaPosicao.y = y;
+    return novaPosicao;
 }

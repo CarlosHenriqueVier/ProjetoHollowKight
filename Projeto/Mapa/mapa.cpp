@@ -37,20 +37,37 @@ void unloadMapa() {
     map.matrizMapa = NULL;
 }
 
+
+// Retorna true se o bloco na posição (px, py) do mundo é sólido
+bool blocoSolido(float px, float py) {
+    int col = (int)(px / bloco.largura);
+    int lin = (int)(py / bloco.altura);
+
+    // Clamp para não sair da matriz
+    if (col < 0) col = 0;
+    if (col >= map.colunas) col = map.colunas - 1;
+    if (lin < 0) lin = 0;
+    if (lin >= map.linhas)  lin = map.linhas  - 1;
+
+    char c = map.matrizMapa[lin][col];
+    return c == 'P';
+}
+
 void desenhaMapa() {
     if (map.matrizMapa == NULL) return;
 
     for (int i = 0; i < map.linhas; i++) {
         for (int j = 0; j < map.colunas; j++) {
             char c = map.matrizMapa[i][j];
-            if (c == ' ' || c == '\n' || c == '\0' || c == '\r') continue;
+            
+            // IGNORA as letras de nascimento (J, M) para não pintar blocos fixos pretos ou vermelhos nelas
+            if (c == ' ' || c == '\n' || c == '\0' || c == '\r' || c == 'J' || c == 'M') continue;
 
             float posX = j * bloco.largura;
             float posY = i * bloco.altura;
 
             if      (c == 'P') DrawRectangle((int)posX, (int)posY, (int)bloco.largura, (int)bloco.altura, BLACK);
             else if (c == 'C') DrawRectangle((int)posX, (int)posY, (int)bloco.largura, (int)bloco.altura, PURPLE);
-            else if (c == 'M') DrawRectangle((int)posX, (int)posY, (int)bloco.largura, (int)bloco.altura, RED);
             else if (c == 'A') DrawRectangle((int)posX, (int)posY, (int)bloco.largura, (int)bloco.altura, YELLOW);
             else if (c == 'H') DrawRectangle((int)posX, (int)posY, (int)bloco.largura, (int)bloco.altura, BLUE);
         }

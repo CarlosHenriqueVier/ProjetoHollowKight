@@ -191,7 +191,7 @@ void desenhaMenu() {
     else if (estadoAtual == ESTADO_CONFIGURACOES) {
         desenhaFundoMenu();
         const char* titulo = "Configuracoes";
-        const char* opcoes[3] = { "Volume", "Controles e Informacoes", "Voltar" };
+        const char* opcoes[3] = { "VOLUME", "AJUSTES", "VOLTAR" };
         DrawText(titulo, tela.largura / 2 - MeasureText(titulo, 40) / 2, 200, 40, WHITE);
         for (int i = 0; i < menuConfiguracoes.totalOpcoes; i++) {
             int fontSize = (i == menuConfiguracoes.opcaoSelecionada) ? 32 : 26;

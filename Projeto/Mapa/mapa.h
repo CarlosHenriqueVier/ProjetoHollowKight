@@ -9,5 +9,6 @@ void loadMapa();
 void unloadMapa();
 void desenhaMapa();
 void preencheBordas();
+bool blocoSolido(float px, float py);
 
 #endif

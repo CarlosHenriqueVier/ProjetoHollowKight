@@ -10,21 +10,19 @@ infoTela tela = {
 };
 
 infoEntidade personagem = {
-    { 50, 130 },  // posicao
-    { 50, 130 },  // posicaoInicial
+    { 0, 0 },     // Será definido pelo 'J' no mapa
+    { 0, 0 },     // posicaoInicial
     { 0 },        // imagem
     false,        // colidindo
-    5.0f,         // velocidade
     30,           // largura
-    30,       // altura
-    true,         // olhandoDireita
-    {  // dados
-        100, //hp
-        50, //mp
-        10, //ataque
-        5 //defesa
-    } 
+    30,           // altura
+    true,         // olhandoDireita 
+    { 100, 50, false, true } // dados
 };
+
+// MODIFICADO: Inicializa o array de inimigos zerado. O mapa vai preencher cada um.
+infoEntidade listaInimigos[MAX_INIMIGOS] = { 0 };
+int quantidadeInimigos = 0;
 
 infoMapa map = { 
     151, 
@@ -60,4 +58,11 @@ infoMenu menuConfiguracoes = {
     { 294, 361, 428 },  // botoesY
     200,        // botaoW
     50          // botaoH
+};
+
+constantes constantesJogo = {
+    3.0f,   // velocidade
+    0.5f,   // gravidade
+    -10.0f,  // forcaPulo
+    0.0f    // velocidadeY padrão
 };
