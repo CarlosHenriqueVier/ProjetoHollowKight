@@ -1,10 +1,10 @@
 #ifndef ESTRUTURAS_H
 #define ESTRUTURAS_H
 #include <raylib.h>
-
+#define QT_BOTOES_MAX 5 // Tamanho do inventário (5x5)
 #define MAX_INIMIGOS 10 // Limite máximo de inimigos que o mapa pode ter
 
-enum Estado { ESTADO_MENU, ESTADO_JOGANDO, ESTADO_PAUSADO, ESTADO_CONFIGURACOES };
+enum Estado { ESTADO_MENU, ESTADO_JOGANDO, ESTADO_PAUSADO, ESTADO_CONFIGURACOES, ESTADO_INVENTARIO };
 
 typedef enum {
     FASE_VILA = 0,
@@ -33,7 +33,7 @@ typedef struct {
 typedef struct {
     int totalOpcoes;
     int opcaoSelecionada;
-    int botoesY[4];
+    int botoesY[QT_BOTOES_MAX];
     int botaoW;
     int botaoH;
     Texture2D menuImagem[10];

@@ -38,17 +38,17 @@ infoBloco bloco = {
 };
 
 infoMenu menuPrincipal = {
-    4,          // totalOpcoes
+    5,          // totalOpcoes
     0,          // opcaoSelecionada
-    { 300, 400, 500, 600 },  // botoesY
+    { 300, 400, 500, 600 , 700},  // botoesY
     200,        // botaoW
     50          // botaoH
 };
 
 infoMenu menuPause = {
-    4,          // totalOpcoes
+    5,          // totalOpcoes
     0,          // opcaoSelecionada
-    { 220, 290, 360, 430 },  // botoesY
+    { 220, 290, 360, 430, 495 },  // botoesY
     260,        // botaoW
     55          // botaoH
 };
