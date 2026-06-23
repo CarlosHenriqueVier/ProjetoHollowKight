@@ -12,15 +12,36 @@ void unloadPersonagem() {
     UnloadTexture(personagem.imagem[1]);
 }
 
+// Variável local para controlar quanto tempo o boneco fica rosa atacando
+static float tempoAtaque = 0.0f;
+
 void updatePersonagem() {
     if (IsKeyDown(KEY_D) || IsKeyDown(KEY_RIGHT)) personagem.olhandoDireita = true;
     if (IsKeyDown(KEY_A) || IsKeyDown(KEY_LEFT))  personagem.olhandoDireita = false;
+
+    // --- SISTEMA DE ATIVAÇÃO DO ATAQUE ---
+    // Ativa o ataque ao pressionar o botão esquerdo do mouse ou a tecla J
+    if (IsKeyPressed(KEY_X) && !personagem.dados.ataque) {
+        personagem.dados.ataque = true;
+        tempoAtaque = 0.2f; // O ataque dura 0.2 segundos (cerca de 12 frames a 60fps)
+    }
+
+    // Gerencia o tempo do ataque
+    if (personagem.dados.ataque) {
+        tempoAtaque -= GetFrameTime();
+        if (tempoAtaque <= 0.0f) {
+            personagem.dados.ataque = false; // Fim do ataque
+        }
+    }
 
     personagem.posicao = movimentaPersonagem(personagem.posicao);
 }
 
 void desenhaPersonagem() {
-    DrawRectangle((int)personagem.posicao.x, (int)personagem.posicao.y, personagem.largura, personagem.altura, GREEN);
+    // SE ESTIVER ATACANDO: Fica ROSA (PINK). SE NÃO: Fica VERDE (GREEN)
+    Color corAtual = personagem.dados.ataque ? PINK : GREEN;
+    
+    DrawRectangle((int)personagem.posicao.x, (int)personagem.posicao.y, personagem.largura, personagem.altura, corAtual);
 }
 
 Vector2 movimentaPersonagem(Vector2 posicaoAtual) {

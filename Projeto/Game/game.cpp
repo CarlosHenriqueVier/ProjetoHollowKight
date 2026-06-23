@@ -57,18 +57,79 @@ void unloadJogo() {
 
 void updateJogo() {
     updatePersonagem();
-    updateInimigo(); // Atualiza todos os inimigos da lista
+    updateInimigo();
 
+    // Cria o retângulo do corpo do personagem
+    Rectangle rectPlayer = { personagem.posicao.x, personagem.posicao.y, (float)personagem.largura, (float)personagem.altura };
+
+    // --- LÓGICA DE ATAQUE DO PERSONAGEM (CAUSAR DANO) ---
+    Rectangle rectAtaque = { 0 };
+    if (personagem.dados.ataque) {
+        float alcanceAtaque = 40.0f; // Distância do golpe em pixels
+        
+        // Se olhar para a direita, a área de ataque fica à frente. Se olhar para a esquerda, fica atrás.
+        if (personagem.olhandoDireita) {
+            rectAtaque = { personagem.posicao.x + personagem.largura, personagem.posicao.y, alcanceAtaque, (float)personagem.altura };
+        } else {
+            rectAtaque = { personagem.posicao.x - alcanceAtaque, personagem.posicao.y, alcanceAtaque, (float)personagem.altura };
+        }
+        
+        // Opcional: Se quiser ver a área do golpe na tela para testar, descomente a linha abaixo (dentro do drawJogo)
+        // DrawRectangleRec(rectAtaque, FADE(PURPLE, 0.5f));
+    }
+
+    // --- LOOP DE INTERAÇÃO COM TODOS OS INIMIGOS ---
+    for (int i = 0; i < quantidadeInimigos; i++) {
+        if (listaInimigos[i].dados.vivo) {
+            Rectangle rectInimigo = { listaInimigos[i].posicao.x, listaInimigos[i].posicao.y, (float)listaInimigos[i].largura, (float)listaInimigos[i].altura };
+
+            // 1. CHECA SE O PERSONAGEM BATEU NO INIMIGO
+            if (personagem.dados.ataque && CheckCollisionRecs(rectAtaque, rectInimigo)) {
+                // Inimigo perde 50% de vida (Dano = 50)
+                listaInimigos[i].dados.hp -= 50;
+                
+                // Força o fim do ataque do jogador para não dar dano contínuo no mesmo golpe
+                personagem.dados.ataque = false; 
+
+                // Se o HP do inimigo chegar a 0%, ele morre
+                if (listaInimigos[i].dados.hp <= 0) {
+                    listaInimigos[i].dados.hp = 0;
+                    listaInimigos[i].dados.vivo = false; // Inimigo some e desativa
+                }
+                
+                // Faz o inimigo dar um mini "coice" para trás ao ser golpeado
+                float direcaoInimigoEmpurrado = (personagem.posicao.x < listaInimigos[i].posicao.x) ? 1.0f : -1.0f;
+                listaInimigos[i].posicao.x += direcaoInimigoEmpurrado * 15.0f;
+                
+                break; // Sai do loop para processar uma colisão por frame
+            }
+
+            // 2. CHECA SE O INIMIGO BATEU NO PERSONAGEM (DANO NO JOGADOR)
+            // Só toma dano se o jogador NÃO estiver atacando naquele frame
+            if (!personagem.dados.ataque && CheckCollisionRecs(rectPlayer, rectInimigo)) {
+                personagem.dados.hp -= 10; // 10% de dano
+                if (personagem.dados.hp <= 0) {
+                    personagem.dados.hp = 0;
+                    personagem.dados.vivo = false; 
+                }
+
+                // Knockback no jogador
+                float direcaoKnockback = (personagem.posicao.x < listaInimigos[i].posicao.x) ? -1.0f : 1.0f;
+                personagem.posicao.x += direcaoKnockback * 20.0f; 
+                constantesJogo.velocidadeY = -6.0f; 
+
+                break; 
+            }
+        }
+    }
+
+    // --- ATUALIZAÇÃO DA CÂMERA (Mantém igual) ---
     tela.camera.target = {
         personagem.posicao.x + personagem.largura / 2.0f,
         personagem.posicao.y + personagem.altura / 2.0f
     };
-    tela.camera.offset = {
-        tela.largura / 2.0f,
-        tela.altura / 2.0f
-    };
+    tela.camera.offset = { tela.largura / 2.0f, tela.altura / 2.0f };
 
-    // Limita câmera nas bordas do mapa
     float mapaLargura = map.colunas * bloco.largura;
     float mapaAltura  = map.linhas  * bloco.altura;
     float margemH     = (tela.largura  / 2.0f) / tela.camera.zoom;
