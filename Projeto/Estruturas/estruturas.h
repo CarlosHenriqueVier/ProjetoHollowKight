@@ -6,11 +6,19 @@ typedef struct {
     int largura;
     int altura;
     char titulo[20];
-    Texture2D menuImagem[3];
-    Texture2D menuBotoes[5];  // ← texturas dos 4 botoes: Jogar, Carregar, Opcoes, Sair
-    Texture2D fundoJogo;
     Camera2D camera;
+    Texture2D fundoJogo;
 } infoTela;
+
+typedef struct {
+    int totalOpcoes;
+    int opcaoSelecionada;
+    int botoesY[4];
+    int botaoW;
+    int botaoH;
+    Texture2D menuImagem[3];
+    Texture2D menuBotoes[5];  // ← texturas dos 4 botoes: Jogar, Carregar, Opcoes, Sair    
+}infoMenu;
 
 typedef struct {
     Vector2 posicao;
@@ -31,10 +39,6 @@ typedef struct {
     Texture2D mapaImagem[3];
 } infoMapa;
 
-typedef struct{
-char Estado[4];
-}infoMenu;
-
 typedef struct {
     float largura;
     float altura;
@@ -44,5 +48,8 @@ extern infoTela tela;
 extern infoPersonagem personagem;
 extern infoMapa map;
 extern infoBloco bloco;
-extern infoMenu menu;
+extern infoMenu menuPrincipal;
+extern infoMenu menuPause;
+extern infoMenu menuConfiguracoes;
+
 #endif
