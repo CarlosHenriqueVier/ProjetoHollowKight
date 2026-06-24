@@ -1,0 +1,13 @@
+@echo off
+echo Compilando...
+
+g++ src\*.cpp -I include -I lib -L lib -lraylib -lopengl32 -lgdi32 -lwinmm -o jogo.exe
+
+if %errorlevel% neq 0 (
+    echo Erro na compilacao.
+) else (
+    echo Compilado com sucesso!
+    jogo.exe
+)
+
+pause

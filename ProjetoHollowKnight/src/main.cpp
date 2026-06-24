@@ -1,0 +1,23 @@
+#define _CRT_SECURE_NO_WARNINGS
+#include <raylib.h>
+#include "estruturas.h"
+#include "menu.h"
+#include "game.h"
+
+int main(void) {
+    InitWindow(tela.largura, tela.altura, tela.titulo);
+    SetTargetFPS(60);
+    SetExitKey(KEY_NULL);
+
+    loadJogo();
+    loadMenu();
+
+    while (!WindowShouldClose()) {
+        desenhaMenu();
+    }
+
+    unloadJogo();
+    unloadMenu();
+    CloseWindow();
+    return 0;
+}
