@@ -5,12 +5,63 @@
 void loadPersonagem() {
     personagem.imagem[0] = LoadTexture("Texturas/Personagem/Personagem.png");
     personagem.imagem[1] = LoadTexture("Texturas/Personagem/InvertePersonagem.png");
+    inicializaAmuletos();
 }
 
 void unloadPersonagem() {
     UnloadTexture(personagem.imagem[0]);
     UnloadTexture(personagem.imagem[1]);
 }
+
+void inicializaAmuletos() {
+    for (int i = 0; i < TOTAL_AMULETOS; i++) {
+        personagem.dados.amuletos[i].coletado = false;
+    }
+}
+
+void coletaAmuleto(TipoAmuleto tipo) {
+    if (!personagem.dados.amuletos[tipo].coletado) {
+        personagem.dados.amuletos[tipo].coletado = true;
+        personagem.dados.amuletosColetados++;
+        
+        switch (tipo) {
+            case AMULETO_ATAQUE:
+                personagem.dados.valorAtaque += 10;
+                break;
+            case AMULETO_DEFESA:
+                personagem.dados.valorDefesa += 5;
+                break;
+            case AMULETO_VIDA:
+                personagem.dados.hp += 20;
+                break;
+        }
+    }
+}
+ 
+void verificaColisaoAmuletos() {
+    float x = personagem.posicao.x;
+    float y = personagem.posicao.y;
+    float w = (float)personagem.largura;
+    float h = (float)personagem.altura;
+    
+    // Verifica colisão com amuletos no mapa
+    int col = (int)((x + w / 2) / bloco.largura);
+    int lin = (int)((y + h / 2) / bloco.altura);
+    
+    if (lin >= 0 && lin < map.linhas && col >= 0 && col < map.colunas) {
+        char c = map.matrizMapa[lin][col];
+        
+        if (c == 'A') {
+            // Determina qual amuleto baseado na posição (você pode melhorar isso depois)
+            TipoAmuleto tipo = (TipoAmuleto)(personagem.dados.amuletosColetados % TOTAL_AMULETOS);
+            coletaAmuleto(tipo);
+            
+            // Remove o amuleto do mapa
+            map.matrizMapa[lin][col] = ' ';
+        }
+    }
+}
+
 
 // Variável local para controlar quanto tempo o boneco fica rosa atacando
 static float tempoAtaque = 0.0f;
@@ -35,6 +86,7 @@ void updatePersonagem() {
     }
 
     personagem.posicao = movimentaPersonagem(personagem.posicao);
+    verificaColisaoAmuletos();
 }
 
 void desenhaPersonagem() {

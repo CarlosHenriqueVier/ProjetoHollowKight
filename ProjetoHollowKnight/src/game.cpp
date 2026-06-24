@@ -81,12 +81,12 @@ void gerenciarTransicaoFases() {
     if ((personagem.posicao.x + personagem.largura) >= (mapaLargura - 45.0f)) {
         if (faseDoJogo == FASE_VILA) {
             faseDoJogo = FASE_INICIAL;
-            map.localMapa = "Mapa/Mapas/mapaInicial.txt";
+            map.localMapa = "maps/mapaInicial.txt";
             mudouDeFase = true;
         } 
         else if (faseDoJogo == FASE_INICIAL) {
             faseDoJogo = FASE_FINAL;
-            map.localMapa = "Mapa/Mapas/mapaFinal.txt";
+            map.localMapa = "maps/mapaFinal.txt";
             mudouDeFase = true;
         }
     }
@@ -209,5 +209,5 @@ void drawJogo() {
         desenhaBoss(); 
     EndMode2D();
     
-    desenhaHud(); 
+    desenhaHud(personagem.dados.hp, personagem.dados.mp,personagem.dados.valorAtaque, personagem.dados.valorDefesa);
 }

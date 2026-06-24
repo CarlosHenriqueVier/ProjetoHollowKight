@@ -4,6 +4,6 @@
 #include "estruturas.h"
 
 void initHud();
-void desenhaHud();
+void desenhaHud(int hp, int mp, int ataque, int defesa);
 
 #endif

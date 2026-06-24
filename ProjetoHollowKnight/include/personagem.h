@@ -8,6 +8,9 @@ void loadPersonagem();
 void unloadPersonagem();
 void updatePersonagem();
 void desenhaPersonagem();
+void verificaColisaoAmuletos();
+void coletaAmuleto(TipoAmuleto tipo);
+void inicializaAmuletos();
 Vector2 movimentaPersonagem(Vector2 posicaoAtual);
 
 #endif

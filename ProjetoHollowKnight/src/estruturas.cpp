@@ -17,7 +17,7 @@ infoEntidade personagem = {
     20,           // largura
     20,           // altura
     true,         // olhandoDireita 
-    { 100, 50, false, true , 0 , 0} // dados
+    { 100, 50, 10, 5, false, true , 0 } // dados
 };
 
 // MODIFICADO: Inicializa o array de inimigos zerado. O mapa vai preencher cada um.

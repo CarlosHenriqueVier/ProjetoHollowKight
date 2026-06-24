@@ -7,6 +7,18 @@
 enum Estado { ESTADO_MENU, ESTADO_JOGANDO, ESTADO_PAUSADO, ESTADO_CONFIGURACOES, ESTADO_INVENTARIO };
 
 typedef enum {
+    AMULETO_ATAQUE,
+    AMULETO_DEFESA,
+    AMULETO_VIDA,
+    TOTAL_AMULETOS
+} TipoAmuleto;
+ 
+typedef struct {
+    TipoAmuleto tipo;
+    bool coletado;
+} Amuleto;
+
+typedef enum {
     FASE_VILA = 0,
     FASE_INICIAL,
     FASE_FINAL
@@ -43,10 +55,12 @@ typedef struct {
 typedef struct {
     int hp;
     int mp;
+    int valorAtaque;
+    int valorDefesa;
     bool ataque;
     bool vivo;
     int amuletosColetados;
-    int habilidadesColetadas;
+    Amuleto amuletos[TOTAL_AMULETOS];
 } dadosEntidade;
 
 typedef struct {
