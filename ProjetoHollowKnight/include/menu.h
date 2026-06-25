@@ -8,7 +8,6 @@ extern Estado estadoAtual;
 void loadMenu();
 void unloadMenu();
 
-void updateConfiguracoes();
 void updatePause();
 void updateMenuPrincipal();
 

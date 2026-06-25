@@ -62,12 +62,9 @@ void updateMenuPrincipal() {
                 estadoAtual = ESTADO_JOGANDO;
                 break;
             case 2:
-                estadoAtual = ESTADO_CONFIGURACOES;
-                break;
-            case 3:
                 estadoAtual = ESTADO_AJUDA;
                 break;
-            case 4:
+            case 3:
                 CloseWindow();
                 exit(0);
                 break;
@@ -112,28 +109,3 @@ void updatePause() {
     }
 }
 
-void updateConfiguracoes() {
-    Vector2 mouse = GetMousePosition();
-    bool cliqueMouse = IsMouseButtonPressed(MOUSE_LEFT_BUTTON);
-
-    for (int i = 0; i < menuConfiguracoes.totalOpcoes; i++) {
-        Rectangle item = {
-            (float)(tela.largura / 2 - 140),
-            (float)(menuConfiguracoes.botoesY[i] - 20),
-            280.0f,
-            40.0f
-        };
-        if (CheckCollisionPointRec(mouse, item)) {
-            menuConfiguracoes.opcaoSelecionada = i;
-        }
-    }
-
-    if (IsKeyPressed(KEY_DOWN))
-        menuConfiguracoes.opcaoSelecionada = (menuConfiguracoes.opcaoSelecionada + 1) % menuConfiguracoes.totalOpcoes;
-    if (IsKeyPressed(KEY_UP))
-        menuConfiguracoes.opcaoSelecionada = (menuConfiguracoes.opcaoSelecionada - 1 + menuConfiguracoes.totalOpcoes) % menuConfiguracoes.totalOpcoes;
-    if ((IsKeyPressed(KEY_ENTER) || cliqueMouse) && menuConfiguracoes.opcaoSelecionada == menuConfiguracoes.totalOpcoes - 1)
-        estadoAtual = ESTADO_MENU;
-    if (IsKeyPressed(KEY_ESCAPE))
-        estadoAtual = ESTADO_MENU;
-}

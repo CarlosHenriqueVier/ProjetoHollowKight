@@ -22,9 +22,8 @@ void desenhaBotao(int texIndex, int posIndex, int selecionado, bool desabilitado
     switch (texIndex) {
         case 0: textoBotao = "NOVO JOGO"; break;
         case 1: textoBotao = "CARREGAR"; break;
-        case 2: textoBotao = "OPCOES"; break;
+        case 2: textoBotao = "AJUDA"; break;
         case 3: textoBotao = "SAIR"; break;
-        case 5: textoBotao = "AJUDA"; break;
     }
 
     int tamTexto = MeasureText(textoBotao, 20);

@@ -39,9 +39,9 @@ infoBloco bloco = {
 };
 
 infoMenu menuPrincipal = {
-    5,          // totalOpcoes
+    4,          // totalOpcoes
     0,          // opcaoSelecionada
-    { 300, 400, 500, 600 , 700},  // botoesY
+    { 300, 400, 500, 600, 700 },  // botoesY
     200,        // botaoW
     50          // botaoH
 };

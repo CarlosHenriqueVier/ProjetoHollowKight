@@ -11,6 +11,38 @@ extern float bossDamageCooldown;
 extern float bossDamageInterval;
 extern int bossDamageValor;
 
+static void resolveColisaoCorpoBossJogador() {
+    Rectangle playerRect = { personagem.posicao.x, personagem.posicao.y, (float)personagem.largura, (float)personagem.altura };
+    Rectangle bossRect = { chefao.posicao.x, chefao.posicao.y, (float)chefao.largura, (float)chefao.altura };
+
+    if (!CheckCollisionRecs(bossRect, playerRect)) return;
+
+    Rectangle inter = GetCollisionRec(bossRect, playerRect);
+    if (inter.width <= 0.0f || inter.height <= 0.0f) return;
+
+    float centroPlayerX = personagem.posicao.x + personagem.largura * 0.5f;
+    float centroBossX = chefao.posicao.x + chefao.largura * 0.5f;
+
+    // Separa pelo menor eixo de intersecao para evitar "grudar" no boss.
+    if (inter.width < inter.height) {
+        float direcao = (centroPlayerX < centroBossX) ? -1.0f : 1.0f;
+        float novoX = personagem.posicao.x + direcao * (inter.width + 2.0f);
+        float checkX = (direcao > 0.0f) ? (novoX + personagem.largura) : novoX;
+
+        bool colideParede = blocoSolido(checkX, personagem.posicao.y + 2.0f)
+                        || blocoSolido(checkX, personagem.posicao.y + personagem.altura - 2.0f);
+        if (!colideParede) {
+            personagem.posicao.x = novoX;
+        }
+    } else {
+        // Fallback vertical: coloca o jogador acima do boss quando sobreposicao vertical predomina.
+        personagem.posicao.y = chefao.posicao.y - personagem.altura - 0.1f;
+        if (constantesJogo.velocidadeY > 0.0f) {
+            constantesJogo.velocidadeY = 0.0f;
+        }
+    }
+}
+
 static void atualizaAtivacaoBoss() {
     if (bossMovendo || bossPreparando) return;
 
@@ -45,6 +77,8 @@ void updateBoss() {
 
     if (bossMovendo) {
         chefao.posicao = movimentaBoss(chefao.posicao);
+        resolveColisaoCorpoBossJogador();
+
         if (bossDamageCooldown > 0.0f) {
             bossDamageCooldown -= GetFrameTime();
             if (bossDamageCooldown < 0.0f) bossDamageCooldown = 0.0f;
@@ -58,25 +92,6 @@ void updateBoss() {
                 chefao.altura + 80.0f
             };
             Rectangle playerRect = {personagem.posicao.x, personagem.posicao.y, (float)personagem.largura, (float)personagem.altura};
-            Rectangle bossRect = {chefao.posicao.x, chefao.posicao.y, (float)chefao.largura, (float)chefao.altura};
-
-            // Colisao fisica com o corpo do boss: empurra o personagem para fora.
-            if (CheckCollisionRecs(bossRect, playerRect)) {
-                float centroPlayer = personagem.posicao.x + personagem.largura * 0.5f;
-                float centroBoss = chefao.posicao.x + chefao.largura * 0.5f;
-                float direcao = (centroPlayer < centroBoss) ? -1.0f : 1.0f;
-                float novoX = personagem.posicao.x + direcao * 20.0f;
-
-                float checkX = (direcao > 0.0f) ? (novoX + personagem.largura) : novoX;
-                bool colideParede = blocoSolido(checkX, personagem.posicao.y + 2.0f)
-                                || blocoSolido(checkX, personagem.posicao.y + personagem.altura - 2.0f);
-                if (!colideParede) {
-                    personagem.posicao.x = novoX;
-                }
-
-                // Pequeno knockback vertical para reforcar impacto.
-                constantesJogo.velocidadeY = -5.0f;
-            }
 
             if (CheckCollisionRecs(areaAtaque, playerRect)) {
                 personagem.dados.hp -= 1;

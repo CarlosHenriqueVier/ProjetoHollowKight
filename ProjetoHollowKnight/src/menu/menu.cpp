@@ -96,8 +96,6 @@ void desenhaMenu() {
     }
     else if (estadoAtual == ESTADO_PAUSADO)
         updatePause();
-    else if (estadoAtual == ESTADO_CONFIGURACOES)
-        updateConfiguracoes();
     else if (estadoAtual == ESTADO_INVENTARIO) {
         desenhaInventario();
     }
@@ -120,8 +118,7 @@ void desenhaMenu() {
         desenhaBotao(0, 0, menuPrincipal.opcaoSelecionada, false);
         desenhaBotao(1, 1, menuPrincipal.opcaoSelecionada, false);
         desenhaBotao(2, 2, menuPrincipal.opcaoSelecionada, false);
-        desenhaBotao(5, 3, menuPrincipal.opcaoSelecionada, false);
-        desenhaBotao(3, 4, menuPrincipal.opcaoSelecionada, false);
+        desenhaBotao(3, 3, menuPrincipal.opcaoSelecionada, false);
         DrawText("SETAS = Navegar | ENTER = Selecionar",
             tela.largura / 2 - MeasureText("SETAS = Navegar | ENTER = Selecionar", 16) / 2,
             tela.altura - 30, 16, DARKGRAY);
@@ -143,21 +140,6 @@ void desenhaMenu() {
         desenhaBotaoPause(4, 4, menuPause.opcaoSelecionada, false);
         const char* hint = "SETAS = Navegar | ENTER = Selecionar | ESC = Continuar";
         DrawText(hint, tela.largura / 2 - MeasureText(hint, 14) / 2, tela.altura - 30, 14, DARKGRAY);
-    }
-    else if (estadoAtual == ESTADO_CONFIGURACOES) {
-        desenhaFundoMenu();
-        const char* titulo = "Configuracoes";
-        const char* opcoes[3] = {"VOLUME", "AJUSTES", "VOLTAR"};
-        DrawText(titulo, tela.largura / 2 - MeasureText(titulo, 40) / 2, 200, 40, WHITE);
-        for (int i = 0; i < menuConfiguracoes.totalOpcoes; i++) {
-            int fontSize = (i == menuConfiguracoes.opcaoSelecionada) ? 32 : 26;
-            Color cor = (i == menuConfiguracoes.opcaoSelecionada) ? YELLOW : WHITE;
-            int x = tela.largura / 2 - MeasureText(opcoes[i], fontSize) / 2;
-            DrawText(opcoes[i], x, menuConfiguracoes.botoesY[i], fontSize, cor);
-        }
-        DrawText("ESC = Voltar",
-            tela.largura / 2 - MeasureText("ESC = Voltar", 16) / 2,
-            tela.altura - 30, 16, DARKGRAY);
     }
     else if (estadoAtual == ESTADO_MORTE) {
         drawJogo();
