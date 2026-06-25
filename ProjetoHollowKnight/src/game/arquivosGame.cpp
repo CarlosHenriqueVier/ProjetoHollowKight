@@ -49,10 +49,10 @@ void inicializaPosicoesEntidades() {
     quantidadeInimigos = 0;
 
     // Reseta estado do boss antes de ler o mapa; ele so deve existir se houver 'C'.
-    bossAtivo = false;
-    bossPodeReceberDano = false;
-    chefao.dados.vivo = false;
-    chefao.dados.hp = 0;
+    bossState.ativo = false;
+    bossState.podeReceberDano = false;
+    bossState.entidade.dados.vivo = false;
+    bossState.entidade.dados.hp = 0;
 
     for (int i = 0; i < map.linhas; i++) {
         for (int j = 0; j < map.colunas; j++) {
@@ -82,13 +82,13 @@ void inicializaPosicoesEntidades() {
                 }
             }
             else if (c == 'C') {
-                chefao.posicao = (Vector2){ posX, posY };
-                chefao.posicaoInicial = (Vector2){ posX, posY };
-                chefao.largura = 30;
-                chefao.altura = 30;
-                chefao.dados.hp = 500;
-                chefao.dados.vivo = true;
-                bossAtivo = true;
+                bossState.entidade.posicao = (Vector2){ posX, posY };
+                bossState.entidade.posicaoInicial = (Vector2){ posX, posY };
+                bossState.entidade.largura = 30;
+                bossState.entidade.altura = 30;
+                bossState.entidade.dados.hp = 500;
+                bossState.entidade.dados.vivo = true;
+                bossState.ativo = true;
                 TraceLog(LOG_INFO, "Boss 'C' carregado na posicao: %.2f, %.2f", posX, posY);
             }
         }

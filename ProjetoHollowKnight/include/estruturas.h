@@ -89,6 +89,20 @@ typedef struct {
 } infoEntidade;
 
 typedef struct {
+    infoEntidade entidade;
+    bool ativo;
+    bool podeReceberDano;
+    float velY;
+    float countdown;
+    bool movendo;
+    bool preparando;
+    float jumpCooldown;
+    float damageCooldown;
+    float damageInterval;
+    int damageValor;
+} BossState;
+
+typedef struct {
     int linhas;
     int colunas;
     const char* localMapa; // <-- Deixe como const char* em vez de char[]
@@ -112,6 +126,7 @@ extern infoBloco bloco;
 extern infoMenu menuPrincipal;
 extern infoMenu menuPause;
 extern constantes constantesJogo;
+extern BossState bossState;
 
 void inicializaEstruturasGlobais();
 

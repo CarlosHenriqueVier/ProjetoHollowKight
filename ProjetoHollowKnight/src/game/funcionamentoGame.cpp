@@ -120,16 +120,16 @@ static void processaColisaoHabilidade() {
 }
 
 static void processaDanoNoBoss(const Rectangle& rectAtaque) {
-    if (!(bossAtivo && chefao.dados.vivo && bossPodeReceberDano && personagem.dados.ataque)) return;
+    if (!(bossState.ativo && bossState.entidade.dados.vivo && bossState.podeReceberDano && personagem.dados.ataque)) return;
 
-    Rectangle rectBoss = { chefao.posicao.x, chefao.posicao.y, (float)chefao.largura, (float)chefao.altura };
+    Rectangle rectBoss = { bossState.entidade.posicao.x, bossState.entidade.posicao.y, (float)bossState.entidade.largura, (float)bossState.entidade.altura };
     if (!CheckCollisionRecs(rectAtaque, rectBoss)) return;
 
-    chefao.dados.hp -= personagem.dados.valorAtaque;
+    bossState.entidade.dados.hp -= personagem.dados.valorAtaque;
     personagem.dados.ataque = false;
-    if (chefao.dados.hp <= 0) {
-        chefao.dados.hp = 0;
-        chefao.dados.vivo = false;
+    if (bossState.entidade.dados.hp <= 0) {
+        bossState.entidade.dados.hp = 0;
+        bossState.entidade.dados.vivo = false;
     }
 }
 
@@ -154,8 +154,8 @@ static void trocarMapa(const char* novoMapa) {
 
     unloadMapa();
     quantidadeInimigos = 0;
-    bossAtivo = false;
-    chefao.dados.vivo = false;
+    bossState.ativo = false;
+    bossState.entidade.dados.vivo = false;
     flaskCarga = 100.0f;
 
     loadMapa();

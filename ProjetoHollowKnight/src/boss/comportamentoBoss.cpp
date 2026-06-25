@@ -3,17 +3,9 @@
 #include "mapa.h"
 #include <raylib.h>
 
-extern float bossVelY;
-extern float bossCountdown;
-extern bool bossMovendo;
-extern bool bossPreparando;
-extern float bossDamageCooldown;
-extern float bossDamageInterval;
-extern int bossDamageValor;
-
 static void aplicaKnockbackJogador(float forcaX, float forcaY) {
     float centroPlayer = personagem.posicao.x + personagem.largura * 0.5f;
-    float centroBoss = chefao.posicao.x + chefao.largura * 0.5f;
+    float centroBoss = bossState.entidade.posicao.x + bossState.entidade.largura * 0.5f;
     float direcao = (centroPlayer < centroBoss) ? -1.0f : 1.0f;
     float novoX = personagem.posicao.x + direcao * forcaX;
 
@@ -29,7 +21,7 @@ static void aplicaKnockbackJogador(float forcaX, float forcaY) {
 
 static void resolveColisaoCorpoBossJogador() {
     Rectangle playerRect = { personagem.posicao.x, personagem.posicao.y, (float)personagem.largura, (float)personagem.altura };
-    Rectangle bossRect = { chefao.posicao.x, chefao.posicao.y, (float)chefao.largura, (float)chefao.altura };
+    Rectangle bossRect = { bossState.entidade.posicao.x, bossState.entidade.posicao.y, (float)bossState.entidade.largura, (float)bossState.entidade.altura };
 
     if (!CheckCollisionRecs(bossRect, playerRect)) return;
 
@@ -37,7 +29,7 @@ static void resolveColisaoCorpoBossJogador() {
     if (inter.width <= 0.0f || inter.height <= 0.0f) return;
 
     float centroPlayerX = personagem.posicao.x + personagem.largura * 0.5f;
-    float centroBossX = chefao.posicao.x + chefao.largura * 0.5f;
+    float centroBossX = bossState.entidade.posicao.x + bossState.entidade.largura * 0.5f;
 
     // Separa pelo menor eixo de intersecao para evitar "grudar" no boss.
     if (inter.width < inter.height) {
@@ -52,7 +44,7 @@ static void resolveColisaoCorpoBossJogador() {
         }
     } else {
         // Fallback vertical: coloca o jogador acima do boss quando sobreposicao vertical predomina.
-        personagem.posicao.y = chefao.posicao.y - personagem.altura - 0.1f;
+        personagem.posicao.y = bossState.entidade.posicao.y - personagem.altura - 0.1f;
         if (constantesJogo.velocidadeY > 0.0f) {
             constantesJogo.velocidadeY = 0.0f;
         }
@@ -60,35 +52,35 @@ static void resolveColisaoCorpoBossJogador() {
 }
 
 static void atualizaAtivacaoBoss() {
-    if (bossMovendo || bossPreparando) return;
+    if (bossState.movendo || bossState.preparando) return;
 
     float distanciaInicio = 260.0f;
-    float diferencaX = personagem.posicao.x - chefao.posicaoInicial.x;
+    float diferencaX = personagem.posicao.x - bossState.entidade.posicaoInicial.x;
     float absDiferencaX = diferencaX < 0 ? -diferencaX : diferencaX;
-    float diferencaY = personagem.posicao.y - chefao.posicaoInicial.y;
+    float diferencaY = personagem.posicao.y - bossState.entidade.posicaoInicial.y;
     float absDiferencaY = diferencaY < 0 ? -diferencaY : diferencaY;
 
     if (absDiferencaX <= distanciaInicio && absDiferencaY <= 200.0f) {
-        bossPreparando = true;
-        bossCountdown = 3.0f;
+        bossState.preparando = true;
+        bossState.countdown = 3.0f;
     }
 }
 
 static void atualizarCooldownDanoBoss() {
-    if (bossDamageCooldown > 0.0f) {
-        bossDamageCooldown -= GetFrameTime();
-        if (bossDamageCooldown < 0.0f) bossDamageCooldown = 0.0f;
+    if (bossState.damageCooldown > 0.0f) {
+        bossState.damageCooldown -= GetFrameTime();
+        if (bossState.damageCooldown < 0.0f) bossState.damageCooldown = 0.0f;
     }
 }
 
 static void tentarAplicarDanoBossNoJogador() {
-    if (bossDamageCooldown > 0.0f) return;
+    if (bossState.damageCooldown > 0.0f) return;
 
     Rectangle areaAtaque = {
-        chefao.posicao.x - 40.0f,
-        chefao.posicao.y - 40.0f,
-        chefao.largura + 80.0f,
-        chefao.altura + 80.0f
+        bossState.entidade.posicao.x - 40.0f,
+        bossState.entidade.posicao.y - 40.0f,
+        bossState.entidade.largura + 80.0f,
+        bossState.entidade.altura + 80.0f
     };
     Rectangle playerRect = { personagem.posicao.x, personagem.posicao.y, (float)personagem.largura, (float)personagem.altura };
 
@@ -101,28 +93,28 @@ static void tentarAplicarDanoBossNoJogador() {
     }
 
     aplicaKnockbackJogador(28.0f, 6.0f);
-    bossDamageCooldown = bossDamageInterval;
+    bossState.damageCooldown = bossState.damageInterval;
 }
 
 void updateBoss() {
-    if (!bossAtivo || !chefao.dados.vivo) return;
+    if (!bossState.ativo || !bossState.entidade.dados.vivo) return;
 
-    if (!bossMovendo) {
-        if (!bossPreparando) {
+    if (!bossState.movendo) {
+        if (!bossState.preparando) {
             atualizaAtivacaoBoss();
         }
         else {
-            bossCountdown -= GetFrameTime();
-            if (bossCountdown <= 0.0f) {
-                bossPreparando = false;
-                bossMovendo = true;
-                bossPodeReceberDano = true;
+            bossState.countdown -= GetFrameTime();
+            if (bossState.countdown <= 0.0f) {
+                bossState.preparando = false;
+                bossState.movendo = true;
+                bossState.podeReceberDano = true;
             }
         }
     }
 
-    if (bossMovendo) {
-        chefao.posicao = movimentaBoss(chefao.posicao);
+    if (bossState.movendo) {
+        bossState.entidade.posicao = movimentaBoss(bossState.entidade.posicao);
         resolveColisaoCorpoBossJogador();
         atualizarCooldownDanoBoss();
         tentarAplicarDanoBossNoJogador();
@@ -130,10 +122,10 @@ void updateBoss() {
 }
 
 void desenhaBoss() {
-    if (bossAtivo && chefao.dados.vivo) {
-        DrawRectangle((int)chefao.posicao.x, (int)chefao.posicao.y, chefao.largura, chefao.altura, ORANGE);
-        DrawRectangle((int)chefao.posicao.x, (int)chefao.posicao.y - 15, chefao.largura, 6, RED);
-        float vidaPercent = (float)chefao.dados.hp / 500.0f;
-        DrawRectangle((int)chefao.posicao.x, (int)chefao.posicao.y - 15, (int)(chefao.largura * vidaPercent), 6, GREEN);
+    if (bossState.ativo && bossState.entidade.dados.vivo) {
+        DrawRectangle((int)bossState.entidade.posicao.x, (int)bossState.entidade.posicao.y, bossState.entidade.largura, bossState.entidade.altura, ORANGE);
+        DrawRectangle((int)bossState.entidade.posicao.x, (int)bossState.entidade.posicao.y - 15, bossState.entidade.largura, 6, RED);
+        float vidaPercent = (float)bossState.entidade.dados.hp / 500.0f;
+        DrawRectangle((int)bossState.entidade.posicao.x, (int)bossState.entidade.posicao.y - 15, (int)(bossState.entidade.largura * vidaPercent), 6, GREEN);
     }
 }

@@ -3,14 +3,11 @@
 #include "personagem.h"
 #include <raylib.h>
 
-extern float bossVelY;
-extern float bossJumpCooldown;
-
 Vector2 movimentaBoss(Vector2 posicaoAtual) {
     float x = posicaoAtual.x;
     float y = posicaoAtual.y;
-    float w = (float)chefao.largura;
-    float h = (float)chefao.altura;
+    float w = (float)bossState.entidade.largura;
+    float h = (float)bossState.entidade.altura;
 
     float velocidadeBoss = constantesJogo.velocidade * 0.4f;
     float distanciaChase = 300.0f;
@@ -22,30 +19,30 @@ Vector2 movimentaBoss(Vector2 posicaoAtual) {
     bool jogadorEstaLonge = absDiferencaX > distanciaPulo;
     bool jogadorEstaPerto = absDiferencaX <= distanciaAtaque;
 
-    if (bossJumpCooldown > 0.0f) {
-        bossJumpCooldown -= GetFrameTime();
-        if (bossJumpCooldown < 0.0f) bossJumpCooldown = 0.0f;
+    if (bossState.jumpCooldown > 0.0f) {
+        bossState.jumpCooldown -= GetFrameTime();
+        if (bossState.jumpCooldown < 0.0f) bossState.jumpCooldown = 0.0f;
     }
 
     float moveX = 0.0f;
 
     if (jogadorEstaLonge) {
-        if (diferencaX > 0) chefao.olhandoDireita = true;
-        else chefao.olhandoDireita = false;
+        if (diferencaX > 0) bossState.entidade.olhandoDireita = true;
+        else bossState.entidade.olhandoDireita = false;
 
-        if (bossVelY == 0.0f && bossJumpCooldown <= 0.0f) {
-            bossVelY = -11.0f;
-            bossJumpCooldown = 1.2f;
+        if (bossState.velY == 0.0f && bossState.jumpCooldown <= 0.0f) {
+            bossState.velY = -11.0f;
+            bossState.jumpCooldown = 1.2f;
         }
 
         moveX = (diferencaX > 0 ? velocidadeBoss : -velocidadeBoss);
     }
     else {
-        float direcaoX = chefao.olhandoDireita ? 1.0f : -1.0f;
+        float direcaoX = bossState.entidade.olhandoDireita ? 1.0f : -1.0f;
         moveX = direcaoX * velocidadeBoss;
 
-        if (diferencaX > 0) chefao.olhandoDireita = true;
-        else chefao.olhandoDireita = false;
+        if (diferencaX > 0) bossState.entidade.olhandoDireita = true;
+        else bossState.entidade.olhandoDireita = false;
     }
 
     // Colisao horizontal com blocos solidos para evitar atravessar paredes.
@@ -63,8 +60,8 @@ Vector2 movimentaBoss(Vector2 posicaoAtual) {
     float velocidadeQueda = 4.0f;
     bool pisouNoChao = false;
 
-    bossVelY += constantesJogo.gravidade;
-    y += bossVelY;
+    bossState.velY += constantesJogo.gravidade;
+    y += bossState.velY;
 
     for (int i = 1; i <= (int)velocidadeQueda; i++) {
         float testeY = y + i;
@@ -77,15 +74,15 @@ Vector2 movimentaBoss(Vector2 posicaoAtual) {
             int lin = (int)((testeY + h) / bloco.altura);
             y = lin * bloco.altura - h - 0.1f;
             pisouNoChao = true;
-            bossVelY = 0.0f;
+            bossState.velY = 0.0f;
             break;
         }
     }
 
     float limiteInferiorMapa = (map.linhas - 2) * bloco.altura;
     if (y > limiteInferiorMapa) {
-        x = chefao.posicaoInicial.x;
-        y = chefao.posicaoInicial.y - 10.0f;
+        x = bossState.entidade.posicaoInicial.x;
+        y = bossState.entidade.posicaoInicial.y - 10.0f;
     }
 
     // Limites horizontais do mapa para o boss nao sair da area jogavel.

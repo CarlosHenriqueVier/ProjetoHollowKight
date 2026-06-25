@@ -12,6 +12,7 @@ infoBloco bloco = { 0 };
 infoMenu menuPrincipal = { 0 };
 infoMenu menuPause = { 0 };
 constantes constantesJogo = { 0 };
+BossState bossState = { 0 };
 
 static void inicializaTela() {
     tela.largura = 1500;
@@ -78,6 +79,13 @@ static void inicializaConstantes() {
     constantesJogo.velocidadeY = 0.0f;
 }
 
+static void inicializaBossState() {
+    bossState = (BossState){ 0 };
+    bossState.countdown = 3.0f;
+    bossState.damageInterval = 1.2f;
+    bossState.damageValor = 25;
+}
+
 void inicializaEstruturasGlobais() {
     quantidadeInimigos = 0;
     proximoTunel = 1;
@@ -87,4 +95,5 @@ void inicializaEstruturasGlobais() {
     inicializaMapaEBlocos();
     inicializaMenus();
     inicializaConstantes();
+    inicializaBossState();
 }
