@@ -57,11 +57,24 @@ void inicializaPosicoesEntidades() {
 }
 
 void loadJogo() {
-    loadMapa(); // Chama a função que agora está no seu arquivo de mapa para medir e carregar o txt
+    // Determina qual mapa carregar baseado na fase
+    switch (faseDoJogo) {
+        case FASE_VILA:
+            map.localMapa = "maps/mapaVila.txt";
+            break;
+        case FASE_INICIAL:
+            map.localMapa = "maps/mapaInicial.txt";
+            break;
+        case FASE_FINAL:
+            map.localMapa = "maps/mapaFinal.txt";
+            break;
+    }
+    
+    loadMapa();
     inicializaPosicoesEntidades(); 
     loadInimigo();
     loadBoss(); 
-    tela.fundoJogo = LoadTexture("Texturas/Fundos/Jogo/FundoJogo.png");
+    tela.fundoJogo = LoadTexture("Fundos/Jogo/FundoJogo.png");
 }
 
 void unloadJogo() {

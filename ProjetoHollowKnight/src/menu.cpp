@@ -1,6 +1,8 @@
 #include "menu.h"
 #include "game.h"
+#include "mapa.h"
 #include "save.h"
+
 #include <raylib.h>
 #include <cstdlib>
 
@@ -164,12 +166,12 @@ void desenhaBotaoPause(int texIndex, int posIndex, int selecionado, bool desabil
 
     const char* textoBotao = "BOTAO";
     switch (texIndex) {
-        case 0: textoBotao = "CONTINUAR"; break;
-        case 1: textoBotao = "INVENTARIO"; break;
-        case 2: textoBotao = "MENU PRINCIPAL"; break;
-        case 3: textoBotao = "SAIR"; break;
-        case 4: textoBotao = "SALVAR"; break;
-    }
+    case 0: textoBotao = "CONTINUAR"; break;
+    case 1: textoBotao = "INVENTARIO"; break;
+    case 2: textoBotao = "MENU PRINCIPAL"; break;
+    case 3: textoBotao = "SALVAR"; break;  // ← ADICIONA
+    case 4: textoBotao = "SAIR"; break;
+}
 
     int tamTexto = MeasureText(textoBotao, 18);
     int textX = (int)(x + (menuPause.botaoW / 2.0f) - (tamTexto / 2.0f));
@@ -189,20 +191,47 @@ void updateMenuPrincipal() {
     if (IsKeyPressed(KEY_ENTER)) {
         switch (menuPrincipal.opcaoSelecionada) {
             case 0: // Novo Jogo
-                personagem.dados.hp = 100;
-                personagem.dados.mp = 50;
-                personagem.dados.habilidadesColetadas = 0;
-                personagem.dados.amuletosColetados = 0;
-                for (int i = 0; i < TOTAL_AMULETOS; i++) {
-                    personagem.dados.amuletos[i].coletado = false;
-                }
-                faseDoJogo = FASE_VILA;
-                estadoAtual = ESTADO_JOGANDO;
-                break;
+            personagem.dados.hp = 100;
+            personagem.dados.mp = 50;
+            personagem.dados.habilidadesColetadas = 0;
+            personagem.dados.amuletosColetados = 0;
+            for (int i = 0; i < TOTAL_AMULETOS; i++) {
+                personagem.dados.amuletos[i].coletado = false;
+            }
+            personagem.dados.ataque = false;
+            personagem.dados.vivo = true;
+            personagem.dados.habilidadeAtiva.ativo = false;
+            faseDoJogo = FASE_VILA;
+            
+            unloadMapa();  // ← descarrega o mapa anterior
+            map.localMapa = "maps/mapaVila.txt";
+            loadMapa();
+            inicializaPosicoesEntidades();
+            
+            estadoAtual = ESTADO_JOGANDO;
+            break;
             case 1: // Carregar
-                carregaJogo();
-                estadoAtual = ESTADO_JOGANDO;
-                break;
+            carregaJogo();
+            
+            unloadMapa();
+            // Carrega o mapa correto baseado na fase
+            switch (faseDoJogo) {
+                case FASE_VILA:
+                    map.localMapa = "maps/mapaVila.txt";
+                    break;
+                case FASE_INICIAL:
+                    map.localMapa = "maps/mapaInicial.txt";
+                    break;
+                case FASE_FINAL:
+                    map.localMapa = "maps/mapaFinal.txt";
+                    break;
+            }
+            
+            loadMapa();
+            inicializaPosicoesEntidades();
+            
+            estadoAtual = ESTADO_JOGANDO;
+            break;
             case 2: // Configurações
                 estadoAtual = ESTADO_CONFIGURACOES;
                 break;
@@ -229,12 +258,13 @@ void updatePause() {
         switch (menuPause.opcaoSelecionada) {
             case 0: estadoAtual = ESTADO_JOGANDO; break;
             case 1: estadoAtual = ESTADO_INVENTARIO; break; 
-            case 2: estadoAtual = ESTADO_MENU;    break;
-            case 3: CloseWindow(); exit(0);        break;
-            case 4: salvaJogo();                   break; // ← ADICIONA
+            case 2: estadoAtual = ESTADO_MENU; break;
+            case 3: salvaJogo(); break;  // ← ADICIONA (Salvar)
+            case 4: CloseWindow(); exit(0); break;  // ← Sair
         }
     }
 }
+
 void updateConfiguracoes() {
     if (IsKeyPressed(KEY_DOWN) || IsKeyPressed(KEY_S))
         menuConfiguracoes.opcaoSelecionada = (menuConfiguracoes.opcaoSelecionada + 1) % menuConfiguracoes.totalOpcoes;
@@ -297,7 +327,8 @@ void desenhaMenu() {
         desenhaBotaoPause(0, 0, menuPause.opcaoSelecionada, false); // Continuar
         desenhaBotaoPause(1, 1, menuPause.opcaoSelecionada, false); // Inventário
         desenhaBotaoPause(2, 2, menuPause.opcaoSelecionada, false); // Menu Principal
-        desenhaBotaoPause(3, 3, menuPause.opcaoSelecionada, false); // Sair
+        desenhaBotaoPause(3, 3, menuPause.opcaoSelecionada, false); // Salvar
+        desenhaBotaoPause(4, 4, menuPause.opcaoSelecionada, false); // Sair
 
         const char* hint = "W/S = Navegar | ENTER = Selecionar | ESC = Continuar";
         DrawText(hint, tela.largura / 2 - MeasureText(hint, 14) / 2, tela.altura - 30, 14, DARKGRAY);

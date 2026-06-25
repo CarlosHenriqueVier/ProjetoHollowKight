@@ -3,6 +3,7 @@
 #include "estruturas.h"
 #include "menu.h"
 #include "game.h"
+#include "save.h"
 
 int main(void) {
     InitWindow(tela.largura, tela.altura, tela.titulo);
@@ -16,6 +17,7 @@ int main(void) {
         desenhaMenu();
     }
 
+    salvaJogo();
     unloadJogo();
     unloadMenu();
     CloseWindow();

@@ -8,6 +8,7 @@ void unloadJogo();
 void updateJogo(); 
 void drawJogo();
 void drawFundo();
+void inicializaPosicoesEntidades();
 
 extern FaseAtual faseDoJogo;
 
