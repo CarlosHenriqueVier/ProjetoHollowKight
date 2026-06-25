@@ -92,21 +92,22 @@ void desenhaInventario() {
         bool equipado    = (personagem.dados.amuletaEquipado == i);
 
         if (personagem.dados.amuletos[i].coletado) {
-            float alfa = equipado ? 0.65f : 0.35f;
+            float alfa = equipado ? 0.75f : 0.4f;
             DrawRectangleRec(slot, Fade(cores[i], alfa));
-            DrawRectangleLinesEx(slot, selecionado ? 4 : 2, selecionado ? WHITE : cores[i]);
+            DrawRectangleLinesEx(slot, selecionado ? 5 : 3, selecionado ? YELLOW : cores[i]);
             if (texturaAmuletos[i].width > 0 && texturaAmuletos[i].height > 0) {
                 Rectangle src = { 0.0f, 0.0f, (float)texturaAmuletos[i].width, (float)texturaAmuletos[i].height };
-                Rectangle dst = { slot.x + 32, slot.y + 18, 80, 80 };
+                Rectangle dst = { slot.x + 35, slot.y + 25, 80, 80 };
                 Vector2 origin = { 0.0f, 0.0f };
                 DrawTexturePro(texturaAmuletos[i], src, dst, origin, 0.0f, WHITE);
+                DrawRectangleLinesEx(dst, 2.0f, WHITE);
             }
-            DrawText(nomes[i],   (int)(slot.x + 10), (int)(slot.y + 20), 18, WHITE);
-            DrawText(efeitos[i], (int)(slot.x + 10), (int)(slot.y + 55), 12, YELLOW);
+            DrawText(nomes[i],   (int)(slot.x + 15), (int)(slot.y + 5), 18, WHITE);
+            DrawText(efeitos[i], (int)(slot.x + 10), (int)(slot.y + 110), 12, LIGHTGRAY);
             if (equipado) {
-                DrawText("EQUIPADO", (int)(slot.x + 25), (int)(slot.y + 120), 16, GOLD);
+                DrawText("EQUIPADO", (int)(slot.x + 20), (int)(slot.y + 135), 14, GOLD);
             } else {
-                DrawText("[coletado]", (int)(slot.x + 20), (int)(slot.y + 125), 13, LIGHTGRAY);
+                DrawText("[coletado]", (int)(slot.x + 15), (int)(slot.y + 135), 12, LIGHTGRAY);
             }
         } else {
             DrawRectangleRec(slot, Fade(BLACK, 0.7f));

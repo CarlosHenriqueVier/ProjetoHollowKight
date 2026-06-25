@@ -31,8 +31,6 @@ static void empurraInimigoParaTras(infoEntidade* inimigo, float direcao) {
     if (!colideParede) {
         inimigo->posicao.x = novoX;
     }
-
-    inimigo->posicao.y -= 10.0f;
 }
 
 static Rectangle getRetanguloAtaqueJogador() {

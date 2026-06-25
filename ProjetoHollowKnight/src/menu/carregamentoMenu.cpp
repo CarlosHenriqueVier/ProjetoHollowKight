@@ -1,6 +1,7 @@
 #include "menu.h"
 
 static const char* MENU_FUNDO = "assets/Menu/menuFundo.png";
+static Texture2D botaoContinuarPause = { 0 };
 static const char* MENU_BOTOES[7] = {
     "assets/Menu/botoes/botaoNovoJogo.png",
     "assets/Menu/botoes/botaoCarregar.png",
@@ -19,7 +20,8 @@ void loadMenu() {
         menuPrincipal.menuBotoes[i] = LoadTexture(MENU_BOTOES[i]);
     }
 
-    menuPause.menuBotoes[0] = menuPrincipal.menuBotoes[0];
+    botaoContinuarPause = LoadTexture("assets/Menu/botoes/botaoContinuar.png");
+    menuPause.menuBotoes[0] = botaoContinuarPause;
     menuPause.menuBotoes[1] = menuPrincipal.menuBotoes[5];
     menuPause.menuBotoes[2] = menuPrincipal.menuBotoes[4];
     menuPause.menuBotoes[3] = menuPrincipal.menuBotoes[6];
@@ -32,6 +34,7 @@ void loadMenu() {
 
 void unloadMenu() {
     UnloadTexture(menuPrincipal.menuImagem[0]);
+    UnloadTexture(botaoContinuarPause);
     for (int i = 0; i < 7; i++) {
         UnloadTexture(menuPrincipal.menuBotoes[i]);
     }

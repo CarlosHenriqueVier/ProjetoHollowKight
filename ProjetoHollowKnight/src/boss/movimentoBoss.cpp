@@ -49,11 +49,17 @@ Vector2 movimentaBoss(Vector2 posicaoAtual) {
     if (moveX != 0.0f) {
         float proximoX = x + moveX;
         float checkX = (moveX > 0.0f) ? (proximoX + w - 2.0f) : (proximoX + 2.0f);
-        bool colideX = blocoSolido(checkX, y + 2.0f)
-                    || blocoSolido(checkX, y + h * 0.5f)
+        bool colideX = blocoSolido(checkX, y + h * 0.35f)
+                    || blocoSolido(checkX, y + h * 0.7f)
                     || blocoSolido(checkX, y + h - 2.0f);
         if (!colideX) {
             x = proximoX;
+        } else {
+            // Evita ficar preso em parede/quina apos o pre-tempo.
+            bossState.entidade.olhandoDireita = !bossState.entidade.olhandoDireita;
+            if (bossState.velY == 0.0f) {
+                bossState.velY = -6.0f;
+            }
         }
     }
 

@@ -21,18 +21,14 @@ void drawFundo() {
 
 void desenhaHabilidade() {
     if (personagem.dados.habilidadeAtiva.ativo) {
-        int tamHab = personagem.largura / 3;
+        int tamHab = personagem.largura * 5;
         Texture2D texturaAtual = personagem.dados.habilidadeAtiva.direcao ? texturaHabilidade[0] : texturaHabilidade[1];
         if (texturaAtual.width > 0 && texturaAtual.height > 0) {
             Rectangle src = { 0.0f, 0.0f, (float)texturaAtual.width, (float)texturaAtual.height };
-            Rectangle dst = { personagem.dados.habilidadeAtiva.posicao.x,
-                              personagem.dados.habilidadeAtiva.posicao.y,
+            Rectangle dst = { personagem.dados.habilidadeAtiva.posicao.x - tamHab / 2,
+                              personagem.dados.habilidadeAtiva.posicao.y + personagem.altura / 2 - tamHab / 2,
                               (float)tamHab, (float)tamHab };
             DrawTexturePro(texturaAtual, src, dst, { 0, 0 }, 0.0f, WHITE);
-        } else {
-            DrawRectangle((int)personagem.dados.habilidadeAtiva.posicao.x,
-                          (int)personagem.dados.habilidadeAtiva.posicao.y,
-                          tamHab, tamHab, ORANGE);
         }
     }
 }

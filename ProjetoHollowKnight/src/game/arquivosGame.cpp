@@ -65,6 +65,12 @@ void inicializaPosicoesEntidades() {
 
     // Reseta estado do boss antes de ler o mapa; ele so deve existir se houver 'C'.
     bossState.ativo = false;
+    bossState.movendo = false;
+    bossState.preparando = false;
+    bossState.countdown = 3.0f;
+    bossState.velY = 0.0f;
+    bossState.jumpCooldown = 0.0f;
+    bossState.damageCooldown = 0.0f;
     bossState.podeReceberDano = false;
     bossState.entidade.dados.vivo = false;
     bossState.entidade.dados.hp = 0;
@@ -86,8 +92,8 @@ void inicializaPosicoesEntidades() {
                 if (quantidadeInimigos < MAX_INIMIGOS) {
                     listaInimigos[quantidadeInimigos].posicao = (Vector2){ posX, posY };
                     listaInimigos[quantidadeInimigos].posicaoInicial = (Vector2){ posX, posY };
-                    listaInimigos[quantidadeInimigos].largura = 30;
-                    listaInimigos[quantidadeInimigos].altura = 30;
+                    listaInimigos[quantidadeInimigos].largura = 80;
+                    listaInimigos[quantidadeInimigos].altura = 80;
                     listaInimigos[quantidadeInimigos].olhandoDireita = true;
                     // Sistema por hits: cada inimigo aguenta 3 acertos.
                     listaInimigos[quantidadeInimigos].dados.hp = HP_INIMIGO_NORMAL;
@@ -101,8 +107,14 @@ void inicializaPosicoesEntidades() {
             else if (c == 'C') {
                 bossState.entidade.posicao = (Vector2){ posX, posY };
                 bossState.entidade.posicaoInicial = (Vector2){ posX, posY };
-                bossState.entidade.largura = 30;
-                bossState.entidade.altura = 30;
+                bossState.entidade.largura = 100;
+                bossState.entidade.altura = 100;
+                bossState.movendo = false;
+                bossState.preparando = false;
+                bossState.countdown = 3.0f;
+                bossState.velY = 0.0f;
+                bossState.jumpCooldown = 0.0f;
+                bossState.damageCooldown = 0.0f;
                 bossState.entidade.dados.hp = HP_BOSS;
                 bossState.entidade.dados.hpMax = HP_BOSS;
                 bossState.entidade.dados.vivo = true;

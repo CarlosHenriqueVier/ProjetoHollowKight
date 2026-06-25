@@ -28,9 +28,11 @@ Vector2 movimentaInimigo(int indice, Vector2 posicaoAtual) {
         listaInimigos[indice].olhandoDireita = true;
     }
 
-    float frenteX = listaInimigos[indice].olhandoDireita ? x + w : x;
-    float pontoY = y + h / 2;
-    if (blocoSolido(frenteX, pontoY)) {
+    float frenteX = listaInimigos[indice].olhandoDireita ? (x + w - 2.0f) : (x + 2.0f);
+    // Teste lateral em dois pontos acima dos pes para nao confundir chao com parede.
+    float pontoY1 = y + h * 0.35f;
+    float pontoY2 = y + h * 0.70f;
+    if (blocoSolido(frenteX, pontoY1) || blocoSolido(frenteX, pontoY2)) {
         listaInimigos[indice].olhandoDireita = !listaInimigos[indice].olhandoDireita;
         x -= direcaoX * velocidadeInimigo;
     }

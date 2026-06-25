@@ -71,17 +71,21 @@ void desenhaHud(int hp, int mp, int ataque, int defesa) {
         DrawRectangleLines(fx, yFlask, flaskW, flaskH, WHITE);
     }
 
-    // --- HABILIDADES ---
+    // --- HABILIDADE (1 slot com icone) ---
     int yHab = tela.altura - 95;
-    DrawText("HABILIDADES:", x, yHab, 14, YELLOW);
-    for (int i = 0; i < 3; i++) {
-        Rectangle slot = { (float)(x + (i * 30)), (float)(yHab + 20), 25, 25 };
-        if (i < personagem.dados.habilidadesColetadas) {
-            DrawRectangleRec(slot, ORANGE);
-            DrawRectangleLinesEx(slot, 1, YELLOW);
-        } else {
-            DrawRectangleRec(slot, DARKGRAY);
-            DrawRectangleLinesEx(slot, 1, GRAY);
-        }
+    DrawText("HABILIDADE:", x, yHab, 14, YELLOW);
+
+    Rectangle slot = { (float)x, (float)(yHab + 20), 34, 34 };
+    bool habilidadeDisponivel = personagem.dados.habilidadesColetadas > 0;
+
+    DrawRectangleRec(slot, habilidadeDisponivel ? (Color){50, 35, 0, 220} : DARKGRAY);
+    DrawRectangleLinesEx(slot, 2, habilidadeDisponivel ? YELLOW : GRAY);
+    DrawRectangleLinesEx((Rectangle){slot.x - 1, slot.y - 1, slot.width + 2, slot.height + 2}, 1, WHITE);
+
+    Texture2D iconeHab = texturaHabilidade[0];
+    if (iconeHab.width > 0 && iconeHab.height > 0) {
+        Rectangle src = { 0.0f, 0.0f, (float)iconeHab.width, (float)iconeHab.height };
+        Rectangle dst = { slot.x + 3, slot.y + 3, slot.width - 6, slot.height - 6 };
+        DrawTexturePro(iconeHab, src, dst, (Vector2){0.0f, 0.0f}, 0.0f, habilidadeDisponivel ? WHITE : GRAY);
     }
 }
