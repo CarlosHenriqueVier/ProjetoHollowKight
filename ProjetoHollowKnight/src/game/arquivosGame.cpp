@@ -8,6 +8,40 @@
 #include <stdio.h>
 
 FaseAtual faseDoJogo = FASE_VILA;
+extern float flaskCarga;
+
+const char* caminhoMapaPorFase(FaseAtual fase) {
+    switch (fase) {
+        case FASE_VILA: return "maps/vila.txt";
+        case FASE_INICIAL: return "maps/tunel1.txt";
+        case FASE_FINAL: return "maps/tunel2.txt";
+        case FASE_TUNEL3: return "maps/tunel3.txt";
+        default: return "maps/vila.txt";
+    }
+}
+
+void carregarMapaAtualComEntidades() {
+    loadMapa();
+    inicializaPosicoesEntidades();
+}
+
+void resetarEstadoNovoJogo() {
+    personagem.dados.hp = 5;
+    personagem.dados.hpMax = 5;
+    personagem.dados.mp = 100;
+    flaskCarga = 100.0f;
+    personagem.dados.flask = 100;
+    personagem.dados.habilidadesColetadas = 0;
+    personagem.dados.amuletosColetados = 0;
+    for (int i = 0; i < TOTAL_AMULETOS; i++) {
+        personagem.dados.amuletos[i].coletado = false;
+    }
+    personagem.dados.ataque = false;
+    personagem.dados.vivo = true;
+    personagem.dados.habilidadeAtiva.ativo = false;
+    faseDoJogo = FASE_VILA;
+    proximoTunel = 1;
+}
 
 void inicializaPosicoesEntidades() {
     if (!map.matrizMapa) return;
@@ -64,23 +98,8 @@ void inicializaPosicoesEntidades() {
 }
 
 void loadJogo() {
-    switch (faseDoJogo) {
-        case FASE_VILA:
-            map.localMapa = "maps/vila.txt";
-            break;
-        case FASE_INICIAL:
-            map.localMapa = "maps/tunel1.txt";
-            break;
-        case FASE_FINAL:
-            map.localMapa = "maps/tunel2.txt";
-            break;
-        case FASE_TUNEL3:
-            map.localMapa = "maps/tunel3.txt";
-            break;
-    }
-
-    loadMapa();
-    inicializaPosicoesEntidades();
+    map.localMapa = caminhoMapaPorFase(faseDoJogo);
+    carregarMapaAtualComEntidades();
     loadPersonagem();
     loadInimigo();
     loadBoss();

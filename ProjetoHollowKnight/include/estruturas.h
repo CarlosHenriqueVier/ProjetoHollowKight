@@ -107,12 +107,12 @@ extern infoEntidade listaInimigos[MAX_INIMIGOS];
 extern int quantidadeInimigos;
 extern FaseAtual faseDoJogo;
 extern int proximoTunel;
-extern dadosEntidade dadosPersonagem;
 extern infoMapa map;
 extern infoBloco bloco;
 extern infoMenu menuPrincipal;
 extern infoMenu menuPause;
-extern infoMenu menuConfiguracoes;
 extern constantes constantesJogo;
+
+void inicializaEstruturasGlobais();
 
 #endif

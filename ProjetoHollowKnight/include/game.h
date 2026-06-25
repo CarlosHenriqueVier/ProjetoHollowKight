@@ -9,6 +9,9 @@ void updateJogo();
 void drawJogo();
 void drawFundo();
 void inicializaPosicoesEntidades();
+const char* caminhoMapaPorFase(FaseAtual fase);
+void carregarMapaAtualComEntidades();
+void resetarEstadoNovoJogo();
 
 extern FaseAtual faseDoJogo;
 

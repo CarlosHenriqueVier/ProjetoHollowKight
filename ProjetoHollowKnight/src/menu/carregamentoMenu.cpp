@@ -17,12 +17,6 @@ void loadMenu() {
     menuPause.menuBotoes[3] = LoadTexture("Texturas/Fundos/Menu/BotaoSair.png");
     menuPause.menuBotoes[4] = LoadTexture("Texturas/Fundos/Menu/BotaoSalvar.png");
     
-    menuConfiguracoes.menuImagem[0] = LoadTexture("Texturas/Fundos/Menu/FundoMenu.png");
-    menuConfiguracoes.menuBotoes[0] = LoadTexture("Texturas/Fundos/Menu/BotaoJogar.png");
-    menuConfiguracoes.menuBotoes[1] = LoadTexture("Texturas/Fundos/Menu/BotaoCarregar.png");
-    menuConfiguracoes.menuBotoes[2] = LoadTexture("Texturas/Fundos/Menu/BotaoOpcoes.png");
-    menuConfiguracoes.menuBotoes[3] = LoadTexture("Texturas/Fundos/Menu/BotaoSair.png");
-    menuConfiguracoes.menuBotoes[4] = LoadTexture("Texturas/Fundos/Menu/BotaoSalvar.png");
     */
 }
 

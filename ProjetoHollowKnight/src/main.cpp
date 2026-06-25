@@ -7,6 +7,7 @@
 #include "save.h"
 
 int main(void) {
+    inicializaEstruturasGlobais();
     InitWindow(tela.largura, tela.altura, tela.titulo);
     SetRandomSeed((unsigned int)time(NULL));
     SetTargetFPS(60);

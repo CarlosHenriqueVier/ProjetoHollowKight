@@ -1,70 +1,90 @@
 #include "estruturas.h"
 
-// Aqui cria e inicializa as variáveis de verdade
+#include <stdio.h>
 
-infoTela tela = { 
-    1500, 
-    800, 
-    "Hollow Knight",
-    { {0,0}, {0,0}, 0.0f, 1.0f }  // camera
-};
-
-infoEntidade personagem = {
-    { 0, 0 },     // Será definido pelo 'J' no mapa
-    { 0, 0 },     // posicaoInicial
-    { 0 },        // imagem
-    false,        // colidindo
-    20,           // largura
-    20,           // altura
-    true,         // olhandoDireita 
-    { 5, 5, 100, 0, 1, 5, false, true , 0 } // dados: hp, hpMax, mp, flask, atk, def...
-};
-
-// MODIFICADO: Inicializa o array de inimigos zerado. O mapa vai preencher cada um.
 infoEntidade listaInimigos[MAX_INIMIGOS] = { 0 };
 int quantidadeInimigos = 0;
 int proximoTunel = 1;
+infoTela tela = { 0 };
+infoEntidade personagem = { 0 };
+infoMapa map = { 0 };
+infoBloco bloco = { 0 };
+infoMenu menuPrincipal = { 0 };
+infoMenu menuPause = { 0 };
+constantes constantesJogo = { 0 };
 
-// Substitua a inicialização antiga por essa:
-infoMapa map = { 
-    16,           // Linhas (ajustado para bater com a matriz dos txts)
-    151,          // Colunas
-    "maps/vila.txt",
-    nullptr
-};
+static void inicializaTela() {
+    tela.largura = 1500;
+    tela.altura = 800;
+    snprintf(tela.titulo, sizeof(tela.titulo), "%s", "Hollow Knight");
+    tela.camera = (Camera2D){ {0, 0}, {0, 0}, 0.0f, 1.0f };
+}
 
-infoBloco bloco = { 
-    30.0f, 
-    30.0f 
-};
+static void inicializaPersonagemBase() {
+    personagem = (infoEntidade){ 0 };
+    personagem.largura = 20;
+    personagem.altura = 20;
+    personagem.olhandoDireita = true;
 
-infoMenu menuPrincipal = {
-    4,          // totalOpcoes
-    0,          // opcaoSelecionada
-    { 300, 400, 500, 600, 700 },  // botoesY
-    200,        // botaoW
-    50          // botaoH
-};
+    personagem.dados.hp = 5;
+    personagem.dados.hpMax = 5;
+    personagem.dados.mp = 100;
+    personagem.dados.flask = 0;
+    personagem.dados.valorAtaque = 1;
+    personagem.dados.valorDefesa = 5;
+    personagem.dados.ataque = false;
+    personagem.dados.vivo = true;
+    personagem.dados.amuletosColetados = 0;
+    personagem.dados.amuletaEquipado = -1;
+}
 
-infoMenu menuPause = {
-    5,          // totalOpcoes
-    0,          // opcaoSelecionada
-    { 220, 290, 360, 430, 495 },  // botoesY
-    260,        // botaoW
-    55          // botaoH
-};
+static void inicializaMapaEBlocos() {
+    map.linhas = 16;
+    map.colunas = 151;
+    map.localMapa = "maps/vila.txt";
+    map.matrizMapa = nullptr;
 
-infoMenu menuConfiguracoes = {
-    3,          // totalOpcoes
-    0,          // opcaoSelecionada
-    { 294, 361, 428 },  // botoesY
-    200,        // botaoW
-    50          // botaoH
-};
+    bloco.largura = 30.0f;
+    bloco.altura = 30.0f;
+}
 
-constantes constantesJogo = {
-    8.0f,   // velocidade
-    0.5f,   // gravidade
-    -20.0f,  // forcaPulo
-    0.0f    // velocidadeY padrão
-};
+static void inicializaMenus() {
+    menuPrincipal = (infoMenu){ 0 };
+    menuPrincipal.totalOpcoes = 4;
+    menuPrincipal.opcaoSelecionada = 0;
+    menuPrincipal.botoesY[0] = 300;
+    menuPrincipal.botoesY[1] = 400;
+    menuPrincipal.botoesY[2] = 500;
+    menuPrincipal.botoesY[3] = 600;
+    menuPrincipal.botaoW = 200;
+    menuPrincipal.botaoH = 50;
+
+    menuPause = (infoMenu){ 0 };
+    menuPause.totalOpcoes = 5;
+    menuPause.opcaoSelecionada = 0;
+    menuPause.botoesY[0] = 220;
+    menuPause.botoesY[1] = 290;
+    menuPause.botoesY[2] = 360;
+    menuPause.botoesY[3] = 430;
+    menuPause.botoesY[4] = 495;
+    menuPause.botaoW = 260;
+    menuPause.botaoH = 55;
+}
+
+static void inicializaConstantes() {
+    constantesJogo.velocidade = 8.0f;
+    constantesJogo.gravidade = 0.5f;
+    constantesJogo.forcaPulo = -20.0f;
+    constantesJogo.velocidadeY = 0.0f;
+}
+
+void inicializaEstruturasGlobais() {
+    quantidadeInimigos = 0;
+    proximoTunel = 1;
+
+    inicializaTela();
+    inicializaPersonagemBase();
+    inicializaMapaEBlocos();
+    inicializaMenus();
+    inicializaConstantes();
+}

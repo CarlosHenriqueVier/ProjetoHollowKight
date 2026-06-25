@@ -27,38 +27,17 @@ void updateMenuPrincipal() {
     if (IsKeyPressed(KEY_ENTER) || cliqueMouse) {
         switch (menuPrincipal.opcaoSelecionada) {
             case 0:
-                personagem.dados.hp = 5;
-                personagem.dados.hpMax = 5;
-                personagem.dados.mp = 100;
-                flaskCarga = 100.0f;
-                personagem.dados.flask = 100;
-                personagem.dados.habilidadesColetadas = 0;
-                personagem.dados.amuletosColetados = 0;
-                for (int i = 0; i < TOTAL_AMULETOS; i++) {
-                    personagem.dados.amuletos[i].coletado = false;
-                }
-                personagem.dados.ataque = false;
-                personagem.dados.vivo = true;
-                personagem.dados.habilidadeAtiva.ativo = false;
-                faseDoJogo = FASE_VILA;
-                proximoTunel = 1;
+                resetarEstadoNovoJogo();
                 unloadMapa();
-                map.localMapa = "maps/vila.txt";
-                loadMapa();
-                inicializaPosicoesEntidades();
+                map.localMapa = caminhoMapaPorFase(faseDoJogo);
+                carregarMapaAtualComEntidades();
                 estadoAtual = ESTADO_JOGANDO;
                 break;
             case 1:
                 carregaJogo();
                 unloadMapa();
-                switch (faseDoJogo) {
-                    case FASE_VILA: map.localMapa = "maps/vila.txt"; break;
-                    case FASE_INICIAL: map.localMapa = "maps/tunel1.txt"; break;
-                    case FASE_FINAL: map.localMapa = "maps/tunel2.txt"; break;
-                    case FASE_TUNEL3: map.localMapa = "maps/tunel3.txt"; break;
-                }
-                loadMapa();
-                inicializaPosicoesEntidades();
+                map.localMapa = caminhoMapaPorFase(faseDoJogo);
+                carregarMapaAtualComEntidades();
                 estadoAtual = ESTADO_JOGANDO;
                 break;
             case 2:
